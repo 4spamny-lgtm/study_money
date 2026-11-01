@@ -214,6 +214,11 @@ button:disabled{cursor:default}
 .rtimes.one{grid-template-columns:1fr}
 .rtimes label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:600;color:var(--soft)}
 .modal .rtimes input{height:56px;font-size:20px;font-weight:700;text-align:center;color:var(--ink)}
+.ovwarn{margin-top:12px;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--up) 8%,var(--bg));border:1px solid color-mix(in srgb,var(--up) 30%,transparent);font-size:14px}
+.ovwarn b{display:block;font-weight:700;margin-bottom:6px}
+.ovwarn span{display:flex;align-items:center;gap:8px;padding:2px 0;font-weight:600}
+.ovwarn i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.ovwarn small{display:block;color:var(--soft);font-size:12px;margin-top:6px}
 .rtimes > span{padding-bottom:16px;color:var(--soft)}
 .legend{display:flex;flex-wrap:wrap;gap:6px;padding:10px 18px 18px}
 .legend span{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:15px;background:var(--bg);font-size:13px;font-weight:500}
@@ -618,8 +623,8 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
         </article>
         <article class="card mcard">
           <h3><em>8</em>거래하기</h3>
-          <p>시작 자금은 1,000만 원이에요. 수량을 정하고 <b>매수</b>나 <b>매도</b>를 누르면 오늘 가격으로 바로 거래돼요. 수수료는 없고, 오전 4시 전까지 몇 번이든 사고팔 수 있어요.</p>
-          <p class="soft">종목은 A바이오부터 M조선까지 13개이고, 주가는 3천 원대부터 100만 원대까지 다양해요. 같은 업종이라도 사건은 종목마다 따로 일어나요. 목록 위의 버튼으로 보유 종목, 단서를 산 종목만 모아 보거나 등락률순으로 정렬할 수 있어요.</p>
+          <p>시작 자금은 100만 원이에요. 수량을 정하고 <b>매수</b>나 <b>매도</b>를 누르면 오늘 가격으로 바로 거래돼요. 수수료는 없고, 오전 4시 전까지 몇 번이든 사고팔 수 있어요.</p>
+          <p class="soft">종목은 A바이오부터 M조선까지 13개이고, 주가는 3천 원대부터 100만 원대까지 다양해요. 100만 원이 넘는 종목은 수익을 내서 자산이 불어나야 살 수 있어요. 같은 업종이라도 사건은 종목마다 따로 일어나요. 목록 위의 버튼으로 보유 종목, 단서를 산 종목만 모아 보거나 등락률순으로 정렬할 수 있어요.</p>
         </article>
         <article class="card mcard">
           <h3><em>9</em>이렇게 해 보세요</h3>
@@ -643,7 +648,7 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
             <li><b>멈추는 걸 잊었을 때</b>: 3시간 넘게 측정 중이면 시계 아래에 <b>멈추는 걸 잊었다면 고치기</b> 버튼이 떠요. 3시간이 안 됐어도 타임테이블의 측정 중인 칸을 눌러 고칠 수 있어요. 실제로 멈춘 시각을 넣으면 그 시각까지만 기록돼요.</li>
             <li><b>이미 저장된 기록</b>: 타임테이블의 색 칸을 누르거나 기록 목록에서 골라 과목, 시간을 바꾸거나 지울 수 있어요.</li>
           </ul>
-          <p class="soft">겹치는 시간이 있으면 새로 넣은 기록으로 덮어써요. 고친 시간만큼 정보 시간도 함께 바뀌어요.</p>
+          <p class="soft">새 기록은 그날 마지막 기록 바로 뒤 시간으로 채워져 있어요. 다른 기록과 시간이 겹치면 저장 전에 알려 주고, 그래도 저장하면 겹치는 부분만 새 기록으로 바뀌어요. 고친 시간만큼 정보 시간도 함께 바뀌어요.</p>
         </article>
         <article class="card mcard">
           <h3><em>12</em>뽀모도로</h3>
@@ -748,7 +753,7 @@ const COLORS=['#9E8585','#A39279','#97987A','#7E9686','#7A9396','#7F8DA3','#8E88
 const cv=k=>k&&k[0]==='#'?k:`var(--${k||'g3'})`;
 const fgv=k=>k&&k[0]==='#'?'#fff':`var(--${k||'g3'}-fg)`;
 const DAYS=['일','월','화','수','목','금','토'];
-const START=4,H=3600e3,KEY='miljul-stock-v1',SEED_CASH=10000000;
+const START=4,H=3600e3,KEY='miljul-stock-v1',SEED_CASH=1000000;
 const tickSz=p=>p<2000?1:p<5000?5:p<20000?10:p<50000?50:p<200000?100:p<500000?500:1000;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1291,8 +1296,17 @@ function openRecForm(mode,x,stop=false){
   if(mode==='run'){recDay=dayKey(S.running.start);rec={mode,sid:S.running.sid,start:toHM(S.running.start),end:toHM(now),stop}}
   else if(mode==='edit')rec={mode,orig:x,sid:x.sid,start:toHM(x.s),end:toHM(x.e)};
   else{
-    const isToday=recDay===dayKey(now),e=isToday?now:tsOf(recDay,'10:00'),s=Math.max(dayStart(recDay),e-H);
-    rec={mode,sid:(S.subjects[0]||{}).id,start:toHM(s),end:toHM(e)};
+    const isToday=recDay===dayKey(now),d0=dayStart(recDay),dEnd=Math.min(d0+24*H,isToday?now:Infinity);
+    let limit=dEnd;if(isToday&&S.running)limit=Math.min(limit,Math.max(d0,S.running.start));
+    const ends=S.sessions.filter(x=>dayKey(x.s)===recDay&&x.e<=limit).map(x=>x.e);
+    let s,e;
+    if(ends.length&&Math.max(...ends)<=limit-10*60e3){s=Math.max(...ends);e=Math.min(limit,s+H)}
+    else{const st=S.sessions.filter(x=>dayKey(x.s)===recDay).map(x=>x.s);
+      if(st.length&&Math.min(...st)-d0>=10*60e3){e=Math.min(...st);s=Math.max(d0,e-H)}
+      else{e=isToday?limit:Math.min(limit,tsOf(recDay,'10:00'));s=Math.max(d0,e-H)}}
+    const usedLast=[...S.sessions].reverse().find(x=>dayKey(x.s)===recDay);
+    const nextSub=S.subjects.find(x=>!usedLast||x.id!==usedLast.sid)||S.subjects[0]||{};
+    rec={mode,sid:nextSub.id,start:toHM(s),end:toHM(e)};
   }
   if(!rec.sid)return toast('먼저 과목을 추가해 주세요');
   renderRecForm();$('recBg').hidden=false;
@@ -1308,15 +1322,19 @@ function renderRecForm(){
       <label>시작<input type="time" id="rStart" value="${r.start}"></label>
       ${run&&!r.stop?'':`<span>–</span><label>${run?'끝 (실제로 멈춘 시각)':'끝'}<input type="time" id="rEnd" value="${r.end}"></label>`}
     </div>
-    <p class="note">${run&&!r.stop?'시작 시간을 고치고 계속 측정해요.':'이 시간과 겹치는 다른 기록은 이 기록으로 덮어써요.'}</p>
+    <p class="note">${run&&!r.stop?'시작 시간을 고치고 계속 측정해요.':'다른 기록과 시간이 겹치면 저장하기 전에 알려 드려요.'}</p>
+    <div class="ovwarn" id="rWarn" hidden></div>
     <div class="actions" style="margin-top:18px">
       ${r.mode==='edit'?'<button class="btn-del" id="rDel">삭제</button>':run?'<button class="btn-del" id="rDel">측정 버리기</button>':''}
       <button class="btn-sub" id="rBack">${r.mode==='new'||r.mode==='edit'?'목록':'취소'}</button>
-      <button class="btn-main" id="rSave">저장</button>
+      <button class="btn-main" id="rSave">${r.ov?'겹치는 부분 덮어쓰고 저장':'저장'}</button>
     </div>`;
-  const keep=()=>{r.start=$('rStart').value||r.start;if($('rEnd'))r.end=$('rEnd').value||r.end};
-  $('recBody').querySelectorAll('[data-rsid]').forEach(b=>b.onclick=()=>{keep();r.sid=b.dataset.rsid;renderRecForm()});
-  $('recBody').querySelectorAll('[data-run]').forEach(b=>b.onclick=()=>{keep();r.stop=b.dataset.run==='stop';renderRecForm()});
+  const keep=()=>{r.start=($('rStart').value||r.start).slice(0,5);if($('rEnd'))r.end=($('rEnd').value||r.end).slice(0,5)};
+  const unOv=()=>{if(r.ov){r.ov=null;$('rWarn').hidden=true;$('rSave').textContent='저장'}};
+  $('rStart').oninput=unOv;if($('rEnd'))$('rEnd').oninput=unOv;
+  if(r.ov)showOv(r.ov);
+  $('recBody').querySelectorAll('[data-rsid]').forEach(b=>b.onclick=()=>{keep();r.sid=b.dataset.rsid;r.ov=null;renderRecForm()});
+  $('recBody').querySelectorAll('[data-run]').forEach(b=>b.onclick=()=>{keep();r.stop=b.dataset.run==='stop';r.ov=null;renderRecForm()});
   $('rBack').onclick=()=>run?closeRec():openRecList(recDay);
   $('rSave').onclick=()=>{keep();saveRec()};
   if($('rDel'))$('rDel').onclick=()=>{
@@ -1325,21 +1343,26 @@ function renderRecForm(){
     else{S.sessions=S.sessions.filter(y=>y!==r.orig);openRecList(recDay);afterRec('기록을 삭제했어요')}
   };
 }
+function overlapping(s,e,ex){return S.sessions.filter(x=>x!==ex&&x.s<e&&x.e>s)}
+function showOv(list){$('rWarn').innerHTML=`<b>이 시간과 겹치는 기록이 있어요</b>${list.map(x=>`<span style="--c:${cv(subj(x.sid).color)}"><i></i>${esc(subj(x.sid).name)} ${toHM(x.s)} – ${toHM(x.e)}</span>`).join('')}<small>시간을 바꾸거나, 그대로 저장하면 겹치는 부분만 새 기록으로 바뀌어요.</small>`;$('rWarn').hidden=false;$('rSave').textContent='겹치는 부분 덮어쓰고 저장'}
+/* 겹침 확인: 처음 저장을 누르면 알려주고, 한 번 더 누르면 덮어써요 */
+function needConfirm(s,e,ex){const ov=overlapping(s,e,ex);if(!ov.length||rec.ov)return false;rec.ov=ov;showOv(ov);return true}
 function saveRec(){
   const r=rec,now=Date.now();
   if(!/^\d\d:\d\d$/.test(r.start)||(!(r.mode==='run'&&!r.stop)&&!/^\d\d:\d\d$/.test(r.end)))return toast('시간을 입력해 주세요');
   const s=tsOf(recDay,r.start);
   if(r.mode==='run'){
     if(s>=now)return toast('시작 시간은 지금보다 앞이어야 해요');
-    if(!r.stop){carve(s,now);S.running={sid:r.sid,start:s};closeRec();return afterRec('측정 중인 기록을 고쳤어요')}
+    if(!r.stop){if(needConfirm(s,now))return;carve(s,now);S.running={sid:r.sid,start:s};closeRec();return afterRec('측정 중인 기록을 고쳤어요')}
     let e=tsOf(dayKey(now),r.end);if(e>now)e-=24*H;
     if(e<=s)return toast('끝 시간이 시작 시간보다 늦어야 해요');
-    carve(s,e);addSession(r.sid,s,e);S.running=null;closeRec();return afterRec(`${hm((e-s)/1000)} 기록하고 측정을 멈췄어요`);
+    if(needConfirm(s,e))return;carve(s,e);addSession(r.sid,s,e);S.running=null;closeRec();return afterRec(`${hm((e-s)/1000)} 기록하고 측정을 멈췄어요`);
   }
   let e=tsOf(recDay,r.end);
   if(e<=s){if(r.end===pad(START)+':00')e+=24*H;else return toast('끝 시간이 시작 시간보다 늦어야 해요')}
   if(e>now)return toast('아직 오지 않은 시간은 기록할 수 없어요');
   if(S.running&&s<now&&e>S.running.start)return toast('측정 중인 기록과 겹쳐요. 측정 중인 기록부터 고쳐 주세요');
+  if(needConfirm(s,e,r.orig))return;
   if(r.mode==='edit')S.sessions=S.sessions.filter(y=>y!==r.orig);
   carve(s,e);addSession(r.sid,s,e);
   openRecList(recDay);afterRec(r.mode==='edit'?'기록을 고쳤어요':`${hm((e-s)/1000)} 기록을 추가했어요`);
@@ -1579,12 +1602,20 @@ function gardenTick(){
   fixPomo();
   // 예전 색(비비드·무채색)은 저채도 팔레트로 바꿔 줌
   S.subjects.forEach((s,i)=>{if(!COLORS.includes(s.color))s.color=COLORS[i%COLORS.length]});
-  if(!S.stock){S.stock={start:shiftKey(dayKey(Date.now()),-30),cash:SEED_CASH,seed:SEED_CASH,v:2,hold:{},spent:0,hints:{},salt:Math.random().toString(36).slice(2,8)};save()}
-  else if(S.stock.v!==2){
-    // 종목 개편: 보유 주식은 산 가격 그대로 현금으로 돌려주고, 시작 자금을 1,000만 원으로 맞춤
+  if(!S.stock){S.stock={start:shiftKey(dayKey(Date.now()),-30),cash:SEED_CASH,seed:SEED_CASH,v:3,hold:{},spent:0,hints:{},salt:Math.random().toString(36).slice(2,8)};save()}
+  else if(!S.stock.v){
+    // 종목 개편 이전 기록: 보유 주식은 산 가격 그대로 현금으로 돌려줌 (시작 자금 100만 원 유지)
     let refund=0;for(const h of Object.values(S.stock.hold))if(h.q)refund+=h.q*h.avg;
-    S.stock.cash+=refund+(SEED_CASH-(S.stock.seed||1000000));S.stock.seed=SEED_CASH;S.stock.hold={};S.stock.v=2;save();
+    S.stock.cash+=refund;S.stock.seed=SEED_CASH;S.stock.hold={};S.stock.v=3;save();
     if(refund)setTimeout(()=>toast('종목이 바뀌어 보유 주식을 산 가격 그대로 현금으로 돌려드렸어요'),600);
+  }
+  else if(S.stock.v===2){
+    // 시작 자금 1,000만 원 → 100만 원
+    const extra=(S.stock.seed||10000000)-SEED_CASH;
+    if(S.stock.cash>=extra){S.stock.cash-=extra;setTimeout(()=>toast('시작 자금이 100만 원으로 바뀌었어요. 보유 주식은 그대로예요'),600)}
+    else{const total=portfolio().total;S.stock.hold={};S.stock.cash=Math.round(total*SEED_CASH/(S.stock.seed||10000000));
+      setTimeout(()=>toast('시작 자금이 100만 원으로 바뀌어, 수익률은 그대로 두고 자산을 1/10로 맞췄어요'),600)}
+    S.stock.seed=SEED_CASH;S.stock.v=3;save();
   }
   openCo=CO[0].id;
   renderName();
