@@ -157,7 +157,31 @@ button:disabled{cursor:default}
 .cells > span{background:var(--cell);border-radius:4px}
 .cells > span:first-child{border-radius:6px 4px 4px 6px}
 .cells > span:last-child{border-radius:4px 6px 6px 4px}
-.blk{position:absolute;top:0;bottom:0;border-radius:4px;background:var(--c)}
+.blk{position:absolute;top:0;bottom:0;border-radius:4px;background:var(--c);cursor:pointer}
+.blk:hover{filter:brightness(.9)}
+.tt-total .tt-edit{margin-left:auto;height:34px;font-size:13px;align-self:center}
+.forgot{display:block;width:100%;margin-top:14px;padding:11px 14px;border-radius:14px;border:1px dashed var(--faint);background:var(--surface);font-size:14px;color:var(--soft)}
+.forgot b{color:var(--ink);text-decoration:underline;text-underline-offset:3px;margin-left:4px}
+.modal.rec{max-width:520px}
+.reclist{list-style:none;max-height:380px;overflow:auto;margin:-6px 0 16px}
+.recrow{display:flex;align-items:center;gap:12px;width:100%;min-height:54px;padding:8px 4px;border-bottom:1px solid var(--line);text-align:left}
+.recrow:hover{background:var(--hover)}
+.recrow .dot{width:12px;height:12px}
+.recrow strong{flex:1;min-width:0;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.recrow span{font-size:14px;color:var(--soft)}
+.recrow em{font-style:normal;font-size:14px;font-weight:700;min-width:76px;text-align:right}
+.recrow b{color:var(--faint);font-weight:400}
+.rsubj{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.rsubj button{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:19px;background:var(--bg);font-size:14px;font-weight:600}
+.rsubj button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.rsubj i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.rrun{width:fit-content;margin-bottom:14px}
+.rdate{font-size:13px;color:var(--soft);margin-bottom:8px}
+.rtimes{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end}
+.rtimes.one{grid-template-columns:1fr}
+.rtimes label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:600;color:var(--soft)}
+.modal .rtimes input{height:56px;font-size:20px;font-weight:700;text-align:center;color:var(--ink)}
+.rtimes > span{padding-bottom:16px;color:var(--soft)}
 .legend{display:flex;flex-wrap:wrap;gap:6px;padding:10px 18px 18px}
 .legend span{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:15px;background:var(--bg);font-size:13px;font-weight:500}
 .legend i{width:8px;height:8px;border-radius:50%;background:var(--c)}
@@ -360,6 +384,7 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
           <p class="hero-date" id="heroDate"></p>
           <div class="hero-time num" id="heroTime">00:00:00</div>
           <span class="chip"><i></i><span id="heroChip">불러오는 중</span></span>
+          <button class="forgot" id="forgot" hidden></button>
         </div>
         <div class="card">
           <div class="sec-head"><h2>과목</h2><button class="ghost" id="addBtn">+ 과목 추가</button></div>
@@ -373,7 +398,7 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
             <div class="mode" role="tablist"><button data-mode="day" aria-selected="true">일간</button><button data-mode="month" aria-selected="false">월간</button></div>
             <div class="nav"><button id="prev" aria-label="이전 날">‹</button><span id="ttDate"></span><button id="next" aria-label="다음 날">›</button></div>
           </div>
-          <div class="tt-total"><b class="num" id="ttTotal">0:00:00</b><small id="ttSub"></small></div>
+          <div class="tt-total"><b class="num" id="ttTotal">0:00:00</b><small id="ttSub"></small><button class="ghost tt-edit" id="recBtn">기록 수정·추가</button></div>
           <div class="daybox" id="dayBox"><div class="grid" id="grid"></div><div class="legend" id="legend"></div></div>
           <div class="monthbox" id="monthBox" hidden>
             <div class="m-stats" id="mStats"></div>
@@ -486,7 +511,17 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
           <p class="soft">대표를 고르지 않으면 가장 가까운 날짜가 자동으로 크게 보여요. 날짜는 매일 오전 5시에 바뀌어요.</p>
         </article>
         <article class="card mcard">
-          <h3><em>11</em>기록 저장과 백업</h3>
+          <h3><em>11</em>기록 고치기·추가</h3>
+          <p>측정을 깜빡했거나 멈추는 걸 잊었을 때 나중에 고칠 수 있어요.</p>
+          <ul>
+            <li><b>깜빡하고 안 쟀을 때</b>: 타임테이블의 <b>기록 수정·추가</b> → <b>+ 기록 추가</b>에서 과목과 시작·끝 시간을 넣어요. 지난 날짜는 ‹ 버튼으로 그날로 간 뒤 추가하면 돼요.</li>
+            <li><b>멈추는 걸 잊었을 때</b>: 3시간 넘게 측정 중이면 시계 아래에 <b>멈추는 걸 잊었다면 고치기</b> 버튼이 떠요. 3시간이 안 됐어도 타임테이블의 측정 중인 칸을 눌러 고칠 수 있어요. 실제로 멈춘 시각을 넣으면 그 시각까지만 기록돼요.</li>
+            <li><b>이미 저장된 기록</b>: 타임테이블의 색 칸을 누르거나 기록 목록에서 골라 과목, 시간을 바꾸거나 지울 수 있어요.</li>
+          </ul>
+          <p class="soft">겹치는 시간이 있으면 새로 넣은 기록으로 덮어써요. 고친 시간만큼 정보 시간도 함께 바뀌어요.</p>
+        </article>
+        <article class="card mcard">
+          <h3><em>12</em>기록 저장과 백업</h3>
           <p>모든 기록은 지금 쓰는 브라우저에 자동으로 저장돼요. 다른 기기와는 공유되지 않아요.</p>
           <p class="soft">브라우저 데이터를 지우거나, 사파리에서 홈 화면에 추가하지 않은 채 오래 접속하지 않으면 기록이 지워질 수 있어요. 가끔 백업 파일을 받아 두세요.</p>
           <div class="bk"><button class="ghost" id="bkOut">백업 파일 받기</button><button class="ghost" id="bkIn">백업 불러오기</button><input type="file" id="bkFile" accept=".json,application/json" hidden></div>
@@ -506,6 +541,13 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
       <button class="btn-sub" id="sCancel">취소</button>
       <button class="btn-main" id="sSave">저장</button>
     </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="recBg" hidden>
+  <div class="modal rec" role="dialog" aria-modal="true" aria-labelledby="recTitle">
+    <h3 id="recTitle">기록</h3>
+    <div id="recBody"></div>
   </div>
 </div>
 
@@ -661,7 +703,7 @@ const subj=id=>S.subjects.find(x=>x.id===id)||{name:'삭제된 과목',color:'g4
 const md=k=>{const[,m,d]=k.split('-').map(Number);return`${m}/${d}`};
 function segs(k){
   const out=S.sessions.filter(x=>dayKey(x.s)===k).map(x=>({sid:x.sid,s:x.s,e:x.e}));
-  if(S.running&&k===dayKey(Date.now()))out.push({sid:S.running.sid,s:Math.max(S.running.start,dayStart(k)),e:Date.now()});
+  if(S.running&&k===dayKey(Date.now()))out.push({sid:S.running.sid,s:Math.max(S.running.start,dayStart(k)),e:Date.now(),run:true});
   return out;
 }
 const daySec=(k,sid)=>segs(k).filter(x=>!sid||x.sid===sid).reduce((a,x)=>a+x.e-x.s,0)/1000;
@@ -715,9 +757,9 @@ function renderTable(){
   $('ttDate').textContent=viewOffset===0?'오늘':`${m}월 ${dd}일 (${DAYS[dt.getDay()]})`;
   $('next').disabled=viewOffset>=0;
   const rows=Array.from({length:24},()=>[]);
-  for(const g of segs(k)){let s=g.s;while(s<g.e){const h=Math.floor((s-base)/H);if(h<0||h>23)break;const rs=base+h*H,pe=Math.min(g.e,rs+H);rows[h].push({l:(s-rs)/H*100,w:(pe-s)/H*100,c:cv(subj(g.sid).color)});s=pe}}
+  for(const g of segs(k)){let s=g.s;while(s<g.e){const h=Math.floor((s-base)/H);if(h<0||h>23)break;const rs=base+h*H,pe=Math.min(g.e,rs+H);rows[h].push({l:(s-rs)/H*100,w:(pe-s)/H*100,c:cv(subj(g.sid).color),key:g.run?'run':g.s});s=pe}}
   const nowRow=viewOffset===0?Math.floor((now-base)/H):-1;
-  $('grid').innerHTML=rows.map((r,h)=>`<div class="hr${h===nowRow?' now':''}"><label>${(START+h)%24}</label><div class="cells"><span></span><span></span><span></span><span></span><span></span><span></span>${r.map(b=>`<i class="blk" style="left:${b.l}%;width:max(${b.w}%,2px);--c:${b.c}"></i>`).join('')}</div></div>`).join('');
+  $('grid').innerHTML=rows.map((r,h)=>`<div class="hr${h===nowRow?' now':''}"><label>${(START+h)%24}</label><div class="cells"><span></span><span></span><span></span><span></span><span></span><span></span>${r.map(b=>`<i class="blk" data-key="${b.key}" style="left:${b.l}%;width:max(${b.w}%,2px);--c:${b.c}"></i>`).join('')}</div></div>`).join('');
   const total=daySec(k);
   $('ttTotal').textContent=hms(total);
   $('ttSub').textContent=total?`총 ${hm(total)} 공부`:'아직 기록이 없어요';
@@ -732,8 +774,9 @@ function tick(){
   $('heroDate').textContent=`${d.getMonth()+1}월 ${d.getDate()}일 ${DAYS[d.getDay()]}요일`;
   $('heroTime').textContent=hms(total);
   const hero=$('hero');
-  if(S.running){const s=subj(S.running.sid);hero.style.setProperty('--tint',cv(s.color));hero.classList.add('on');$('heroChip').textContent=`${s.name} 공부 중 · ${hms((now-S.running.start)/1000)}`}
-  else{hero.style.removeProperty('--tint');hero.classList.remove('on');$('heroChip').textContent=total?'쉬는 중':'과목 옆 ▶ 버튼으로 시작하세요'}
+  if(S.running){const s=subj(S.running.sid);hero.style.setProperty('--tint',cv(s.color));hero.classList.add('on');$('heroChip').textContent=`${s.name} 공부 중 · ${hms((now-S.running.start)/1000)}`;
+    const long=now-S.running.start>=3*H;$('forgot').hidden=!long;if(long)$('forgot').innerHTML=`${hm((now-S.running.start)/1000)}째 측정 중 · <b>멈추는 걸 잊었다면 고치기</b>`}
+  else{hero.style.removeProperty('--tint');hero.classList.remove('on');$('forgot').hidden=true;$('heroChip').textContent=total?'쉬는 중':'과목 옆 ▶ 버튼으로 시작하세요'}
   document.querySelectorAll('[data-t]').forEach(el=>el.textContent=hms(daySec(today,el.dataset.t)));
 
   const info=infoSec(),hours=Math.floor(info/3600);
@@ -887,7 +930,7 @@ $('sDel').onclick=()=>{
 };
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&!$('sheetBg').hidden)return closeSheet();
-  if(/INPUT|TEXTAREA/.test(e.target.tagName)||!$('sheetBg').hidden||e.metaKey||e.ctrlKey||e.altKey)return;
+  if(/INPUT|TEXTAREA/.test(e.target.tagName)||!$('sheetBg').hidden||!$('recBg').hidden||!$('ddBg').hidden||e.metaKey||e.ctrlKey||e.altKey)return;
   if(view==='timer'&&/^[1-9]$/.test(e.key)){const s=S.subjects[Number(e.key)-1];if(s){e.preventDefault();toggle(s.id)}}
 });
 $('addBtn').onclick=()=>openSheet(null);
@@ -895,7 +938,7 @@ $('subjects').onclick=e=>{const p=e.target.closest('[data-play]');if(p)return to
 $('prev').onclick=()=>{if(ttMode==='month')monthOffset--;else viewOffset--;renderTable()};
 $('next').onclick=()=>{if(ttMode==='month'){if(monthOffset<0)monthOffset++}else if(viewOffset<0)viewOffset++;renderTable()};
 function setMode(m){ttMode=m;document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-selected',b.dataset.mode===m));
-  $('dayBox').hidden=m!=='day';$('monthBox').hidden=m!=='month';renderTable()}
+  $('dayBox').hidden=m!=='day';$('monthBox').hidden=m!=='month';$('recBtn').hidden=m!=='day';renderTable()}
 document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{
   if(b.dataset.mode==='month'){const[y,mo]=shiftKey(dayKey(Date.now()),viewOffset).split('-').map(Number),n=new Date(Date.now()-START*H);monthOffset=(y-n.getFullYear())*12+(mo-1-n.getMonth())}
   setMode(b.dataset.mode)});
@@ -917,6 +960,100 @@ function renderMonth(){
   $('ttSub').textContent=monthOffset===0?'이번 달 총 공부':`${m+1}월 총 공부`;
   $('mStats').innerHTML=`<div><small>공부한 날</small><b class="num">${studied}일</b></div><div><small>하루 평균</small><b class="num">${studied?hm(total/studied):'0분'}</b></div><div><small>최고 기록${best?` (${m+1}/${bestDay})`:''}</small><b class="num">${best?hm(best):'없음'}</b></div>`;
 }
+/* ───── 기록 고치기·추가 ───── */
+let recDay=null,rec=null,recArmed=false;
+const toHM=ts=>{const d=new Date(ts);return pad(d.getHours())+':'+pad(d.getMinutes())};
+function tsOf(k,v){const[h,m]=v.split(':').map(Number),[y,mo,d]=k.split('-').map(Number);return new Date(y,mo-1,d+(h<START?1:0),h,m).getTime()}
+const kLabel=k=>{const[y,m,d]=k.split('-').map(Number);return`${m}월 ${d}일 (${DAYS[new Date(y,m-1,d).getDay()]})`};
+function carve(a,b){const out=[];for(const x of S.sessions){if(x.e<=a||x.s>=b){out.push(x);continue}if(x.s<a&&a-x.s>=1000)out.push({...x,e:a});if(x.e>b&&x.e-b>=1000)out.push({...x,s:b})}S.sessions=out}
+const sortSessions=()=>S.sessions.sort((a,b)=>a.s-b.s);
+function afterRec(msg){sortSessions();save();renderSubjects();tick();if(view==='stock'){renderStock();renderCo()}toast(msg)}
+function closeRec(){$('recBg').hidden=true;rec=null}
+
+function openRecList(k){
+  recDay=k;rec=null;
+  const list=S.sessions.filter(x=>dayKey(x.s)===k).sort((a,b)=>a.s-b.s);
+  const runHere=S.running&&(dayKey(S.running.start)===k||dayKey(Date.now())===k);
+  $('recTitle').textContent=`${kLabel(k)} 기록`;
+  $('recBody').innerHTML=`<ul class="reclist">${runHere?`<li><button class="recrow" data-rk="run" style="--c:${cv(subj(S.running.sid).color)}"><i class="dot"></i><strong>${esc(subj(S.running.sid).name)}</strong><span class="num">${toHM(S.running.start)} – 측정 중</span><em class="num">${hm((Date.now()-S.running.start)/1000)}</em><b>›</b></button></li>`:''}
+    ${list.map(x=>`<li><button class="recrow" data-rk="${x.s}" style="--c:${cv(subj(x.sid).color)}"><i class="dot"></i><strong>${esc(subj(x.sid).name)}</strong><span class="num">${toHM(x.s)} – ${toHM(x.e)}</span><em class="num">${hm((x.e-x.s)/1000)}</em><b>›</b></button></li>`).join('')}
+    ${!list.length&&!runHere?'<li class="empty">이 날은 아직 기록이 없어요</li>':''}</ul>
+    <div class="actions"><button class="btn-sub" id="rClose">닫기</button><button class="btn-main" id="rNew">+ 기록 추가</button></div>`;
+  $('recBg').hidden=false;
+  $('rClose').onclick=closeRec;
+  $('rNew').onclick=()=>openRecForm('new');
+  $('recBody').querySelectorAll('[data-rk]').forEach(b=>b.onclick=()=>{
+    if(b.dataset.rk==='run')return openRecForm('run');
+    const x=S.sessions.find(y=>y.s===Number(b.dataset.rk));if(x)openRecForm('edit',x)});
+}
+function openRecForm(mode,x,stop=false){
+  recArmed=false;
+  const now=Date.now();
+  if(mode==='run'){recDay=dayKey(S.running.start);rec={mode,sid:S.running.sid,start:toHM(S.running.start),end:toHM(now),stop}}
+  else if(mode==='edit')rec={mode,orig:x,sid:x.sid,start:toHM(x.s),end:toHM(x.e)};
+  else{
+    const isToday=recDay===dayKey(now),e=isToday?now:tsOf(recDay,'10:00'),s=Math.max(dayStart(recDay),e-H);
+    rec={mode,sid:(S.subjects[0]||{}).id,start:toHM(s),end:toHM(e)};
+  }
+  if(!rec.sid)return toast('먼저 과목을 추가해 주세요');
+  renderRecForm();$('recBg').hidden=false;
+}
+function renderRecForm(){
+  const r=rec,run=r.mode==='run';
+  $('recTitle').textContent=run?'측정 중인 기록 고치기':r.mode==='edit'?'기록 수정':'기록 추가';
+  $('recBody').innerHTML=`
+    <div class="rsubj">${S.subjects.map(s=>`<button data-rsid="${s.id}" aria-pressed="${s.id===r.sid}" style="--c:${cv(s.color)}"><i></i>${esc(s.name)}</button>`).join('')}</div>
+    ${run?`<div class="mode rrun"><button data-run="go" aria-selected="${!r.stop}">계속 측정</button><button data-run="stop" aria-selected="${r.stop}">이 시간에 종료</button></div>`:''}
+    <p class="rdate">${run?`${kLabel(recDay)}에 시작`:kLabel(recDay)} · 하루는 오전 5시에 시작해요</p>
+    <div class="rtimes${run&&!r.stop?' one':''}">
+      <label>시작<input type="time" id="rStart" value="${r.start}"></label>
+      ${run&&!r.stop?'':`<span>–</span><label>${run?'끝 (실제로 멈춘 시각)':'끝'}<input type="time" id="rEnd" value="${r.end}"></label>`}
+    </div>
+    <p class="note">${run&&!r.stop?'시작 시간을 고치고 계속 측정해요.':'이 시간과 겹치는 다른 기록은 이 기록으로 덮어써요.'}</p>
+    <div class="actions" style="margin-top:18px">
+      ${r.mode==='edit'?'<button class="btn-del" id="rDel">삭제</button>':run?'<button class="btn-del" id="rDel">측정 버리기</button>':''}
+      <button class="btn-sub" id="rBack">${r.mode==='new'||r.mode==='edit'?'목록':'취소'}</button>
+      <button class="btn-main" id="rSave">저장</button>
+    </div>`;
+  const keep=()=>{r.start=$('rStart').value||r.start;if($('rEnd'))r.end=$('rEnd').value||r.end};
+  $('recBody').querySelectorAll('[data-rsid]').forEach(b=>b.onclick=()=>{keep();r.sid=b.dataset.rsid;renderRecForm()});
+  $('recBody').querySelectorAll('[data-run]').forEach(b=>b.onclick=()=>{keep();r.stop=b.dataset.run==='stop';renderRecForm()});
+  $('rBack').onclick=()=>run?closeRec():openRecList(recDay);
+  $('rSave').onclick=()=>{keep();saveRec()};
+  if($('rDel'))$('rDel').onclick=()=>{
+    if(!recArmed){recArmed=true;$('rDel').textContent='한 번 더 누르면 삭제';return}
+    if(run){S.running=null;closeRec();afterRec('측정 중이던 기록을 버렸어요')}
+    else{S.sessions=S.sessions.filter(y=>y!==r.orig);openRecList(recDay);afterRec('기록을 삭제했어요')}
+  };
+}
+function saveRec(){
+  const r=rec,now=Date.now();
+  if(!/^\d\d:\d\d$/.test(r.start)||(!(r.mode==='run'&&!r.stop)&&!/^\d\d:\d\d$/.test(r.end)))return toast('시간을 입력해 주세요');
+  const s=tsOf(recDay,r.start);
+  if(r.mode==='run'){
+    if(s>=now)return toast('시작 시간은 지금보다 앞이어야 해요');
+    if(!r.stop){carve(s,now);S.running={sid:r.sid,start:s};closeRec();return afterRec('측정 중인 기록을 고쳤어요')}
+    let e=tsOf(dayKey(now),r.end);if(e>now)e-=24*H;
+    if(e<=s)return toast('끝 시간이 시작 시간보다 늦어야 해요');
+    carve(s,e);addSession(r.sid,s,e);S.running=null;closeRec();return afterRec(`${hm((e-s)/1000)} 기록하고 측정을 멈췄어요`);
+  }
+  let e=tsOf(recDay,r.end);
+  if(e<=s){if(r.end===pad(START)+':00')e+=24*H;else return toast('끝 시간이 시작 시간보다 늦어야 해요')}
+  if(e>now)return toast('아직 오지 않은 시간은 기록할 수 없어요');
+  if(S.running&&s<now&&e>S.running.start)return toast('측정 중인 기록과 겹쳐요. 측정 중인 기록부터 고쳐 주세요');
+  if(r.mode==='edit')S.sessions=S.sessions.filter(y=>y!==r.orig);
+  carve(s,e);addSession(r.sid,s,e);
+  openRecList(recDay);afterRec(r.mode==='edit'?'기록을 고쳤어요':`${hm((e-s)/1000)} 기록을 추가했어요`);
+}
+$('recBtn').onclick=()=>openRecList(shiftKey(dayKey(Date.now()),viewOffset));
+$('forgot').onclick=()=>openRecForm('run',null,true);
+$('grid').onclick=e=>{const b=e.target.closest('.blk');if(!b)return;
+  recDay=shiftKey(dayKey(Date.now()),viewOffset);
+  if(b.dataset.key==='run')return openRecForm('run');
+  const x=S.sessions.find(y=>y.s===Number(b.dataset.key));if(x)openRecForm('edit',x)};
+$('recBg').onclick=e=>{if(e.target.id==='recBg')closeRec()};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('recBg').hidden)closeRec()});
+
 /* 백업 */
 $('bkOut').onclick=()=>{
   const blob=new Blob([JSON.stringify(S,null,1)],{type:'application/json'}),a=document.createElement('a');
