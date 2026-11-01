@@ -116,6 +116,35 @@ button:disabled{cursor:default}
 /* ── 타이머 ── */
 .hero{container-type:inline-size;padding:30px 28px 26px;text-align:center;transition:background .4s;background:color-mix(in srgb,var(--tint,transparent) 9%,var(--surface))}
 .hero-date{font-size:15px;color:var(--soft);font-weight:500}
+.hero-top{display:flex;align-items:center;justify-content:space-between;margin:-10px -10px 14px}
+.hero-top .mode button{height:32px;padding:0 14px;font-size:13px}
+.gear{width:38px;height:38px;border-radius:12px;color:var(--soft);display:grid;place-items:center}
+.gear:hover{background:var(--hover)}
+.gear svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8}
+.hero.brk{background:repeating-linear-gradient(135deg,var(--surface) 0 14px,var(--bg) 14px 15px)}
+.pomo{margin-top:18px}
+.pbar{height:6px;border-radius:6px;background:var(--line);overflow:hidden;max-width:420px;margin:0 auto}
+.pbar span{display:block;height:100%;width:0;border-radius:6px;background:var(--tint,var(--ink));transition:width 1s linear}
+.hero.brk .pbar span{background:var(--soft)}
+.pdots{display:flex;justify-content:center;gap:8px;margin:14px 0 6px}
+.pdots i{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--faint)}
+.pdots i.on{background:var(--ink);border-color:var(--ink)}
+.pdots i.cur{border-color:var(--ink);animation:pulse 1.6s ease-in-out infinite}
+.psub{font-size:13px;color:var(--soft)}
+.pbtns{margin-top:14px;display:flex;justify-content:center}
+.pbtns .ghost{height:44px;padding:0 18px;font-size:14px}
+.pbtns .pgo{height:48px;padding:0 24px;border-radius:14px;font-size:15px;font-weight:600}
+.presets{display:flex;gap:8px;margin-bottom:10px}
+.presets button{flex:1;height:44px;border-radius:12px;background:var(--bg);font-size:14px;font-weight:600;color:var(--soft)}
+.presets button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.pmrow{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px;border-bottom:1px solid var(--line);font-size:15px}
+.stp{display:flex;align-items:center;gap:6px}
+.stp button{width:40px;height:40px;border-radius:12px;background:var(--bg);font-size:18px;font-weight:600}
+.stp b{min-width:72px;text-align:center;font-size:15px}
+.sw{width:52px;height:32px;border-radius:16px;background:var(--line);position:relative;flex:none;transition:background .2s}
+.sw i{position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s}
+.sw[aria-pressed="true"]{background:var(--ink)}
+.sw[aria-pressed="true"] i{transform:translateX(20px)}
 .hero-time{font-size:min(112px,20cqi);white-space:nowrap;font-weight:700;letter-spacing:-.045em;line-height:1.1;margin:6px 0 14px}
 .chip{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 16px;border-radius:18px;background:var(--bg);font-size:15px;font-weight:500;color:var(--soft)}
 .chip i{width:8px;height:8px;border-radius:50%;background:var(--tint,var(--faint))}
@@ -381,10 +410,20 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
     <section class="view timer-layout" id="view-timer">
       <div class="col">
         <div class="card hero" id="hero">
+          <div class="hero-top">
+            <div class="mode" role="tablist" aria-label="타이머 방식"><button data-hm="sw" aria-selected="true">스톱워치</button><button data-hm="pomo" aria-selected="false">뽀모도로</button></div>
+            <button class="gear" id="pmGear" hidden aria-label="뽀모도로 설정"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+          </div>
           <p class="hero-date" id="heroDate"></p>
           <div class="hero-time num" id="heroTime">00:00:00</div>
           <span class="chip"><i></i><span id="heroChip">불러오는 중</span></span>
           <button class="forgot" id="forgot" hidden></button>
+          <div class="pomo" id="pomoBox" hidden>
+            <div class="pbar"><span id="pBar"></span></div>
+            <div class="pdots" id="pDots"></div>
+            <p class="psub" id="pSub"></p>
+            <div class="pbtns" id="pBtns"></div>
+          </div>
         </div>
         <div class="card">
           <div class="sec-head"><h2>과목</h2><button class="ghost" id="addBtn">+ 과목 추가</button></div>
@@ -521,7 +560,17 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
           <p class="soft">겹치는 시간이 있으면 새로 넣은 기록으로 덮어써요. 고친 시간만큼 정보 시간도 함께 바뀌어요.</p>
         </article>
         <article class="card mcard">
-          <h3><em>12</em>기록 저장과 백업</h3>
+          <h3><em>12</em>뽀모도로</h3>
+          <p>시계 카드 위쪽에서 <b>뽀모도로</b>를 고르고 과목 ▶를 누르면 집중 시간이 거꾸로 흘러가요. 끝나면 소리와 함께 기록이 자동으로 저장되고 휴식으로 넘어가요.</p>
+          <ul>
+            <li>기본은 25분 집중, 5분 휴식이고, 4번마다 15분 긴 휴식이에요. ⚙ 버튼에서 바꿀 수 있어요(50분·10분 프리셋도 있어요).</li>
+            <li>집중 시간만 공부 기록과 정보 시간에 들어가요. 휴식 시간은 기록되지 않아요.</li>
+            <li>중간에 멈추면 거기까지만 기록돼요. 휴식은 건너뛸 수 있어요.</li>
+          </ul>
+          <p class="soft">집중하는 동안에는 화면이 꺼지지 않게 해 두었어요. 아이패드를 잠그거나 다른 앱으로 가면 알림 소리는 늦게 날 수 있지만, 기록은 정해진 집중 시간까지만 정확히 저장돼요.</p>
+        </article>
+        <article class="card mcard">
+          <h3><em>13</em>기록 저장과 백업</h3>
           <p>모든 기록은 지금 쓰는 브라우저에 자동으로 저장돼요. 다른 기기와는 공유되지 않아요.</p>
           <p class="soft">브라우저 데이터를 지우거나, 사파리에서 홈 화면에 추가하지 않은 채 오래 접속하지 않으면 기록이 지워질 수 있어요. 가끔 백업 파일을 받아 두세요.</p>
           <div class="bk"><button class="ghost" id="bkOut">백업 파일 받기</button><button class="ghost" id="bkIn">백업 불러오기</button><input type="file" id="bkFile" accept=".json,application/json" hidden></div>
@@ -541,6 +590,15 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
       <button class="btn-sub" id="sCancel">취소</button>
       <button class="btn-main" id="sSave">저장</button>
     </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="pmBg" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+    <h3 id="pmTitle">뽀모도로 설정</h3>
+    <div class="presets"><button data-pre="25,5,15">25분 집중 · 5분 휴식</button><button data-pre="50,10,30">50분 집중 · 10분 휴식</button></div>
+    <div id="pmRows"></div>
+    <div class="actions" style="margin-top:18px"><button class="btn-main" id="pmDone">완료</button></div>
   </div>
 </div>
 
@@ -675,7 +733,7 @@ const st={
   async get(k){try{if(!window.storage)return LS?LS.getItem(k):(mem.get(k)??null);const r=await window.storage.get(k,false);return r?r.value:null}catch(e){return null}},
   async set(k,v){if(!window.storage){if(LS)LS.setItem(k,v);else mem.set(k,v);return true}const r=await window.storage.set(k,v,false);if(!r)throw new Error('empty');return true}
 };
-let S={subjects:[{id:'s1',name:'국어',color:'#7F8DA3'},{id:'s2',name:'수학',color:'#9E8585'},{id:'s3',name:'영어',color:'#7E9686'}],sessions:[],running:null,stock:null,ddays:[]};
+let S={subjects:[{id:'s1',name:'국어',color:'#7F8DA3'},{id:'s2',name:'수학',color:'#9E8585'},{id:'s3',name:'영어',color:'#7E9686'}],sessions:[],running:null,stock:null,ddays:[],pomo:null};
 let coFilter='all',coSort=false,ttMode='day',monthOffset=0;
 let view='timer',viewOffset=0,editId=null,pick='g1',armedDel=false,openCo=null,histCache={key:null},lastDay=null,qty=1;
 
@@ -736,6 +794,10 @@ function hintText(c,tier,day){
 const ICON_PLAY='<svg viewBox="0 0 24 24"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>';
 const ICON_PAUSE='<svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>';
 function toggle(sid){
+  audioUnlock();
+  if(S.pomo.on){const now=Date.now();
+    if(S.running&&S.running.sid===sid){endFocus(now,false);toast('집중을 멈췄어요. 여기까지 기록했어요')}else startFocus(sid,now);
+    viewOffset=0;renderSubjects();tick();save();return}
   const now=Date.now(),same=S.running&&S.running.sid===sid;
   if(S.running){addSession(S.running.sid,S.running.start,now);S.running=null}
   if(!same){S.running={sid,start:now};viewOffset=0}
@@ -768,6 +830,7 @@ function renderTable(){
   $('legend').hidden=!per.length;
 }
 function tick(){
+  pomoTick(Date.now());
   const now=Date.now(),today=dayKey(now),d=new Date(now-START*H),total=daySec(today);
   if(lastDay&&lastDay!==today){toast('오전 5시, 새 하루가 시작되고 주가가 움직였어요');if(view==='stock'){renderStock();renderCo()}}
   lastDay=today;
@@ -777,6 +840,7 @@ function tick(){
   if(S.running){const s=subj(S.running.sid);hero.style.setProperty('--tint',cv(s.color));hero.classList.add('on');$('heroChip').textContent=`${s.name} 공부 중 · ${hms((now-S.running.start)/1000)}`;
     const long=now-S.running.start>=3*H;$('forgot').hidden=!long;if(long)$('forgot').innerHTML=`${hm((now-S.running.start)/1000)}째 측정 중 · <b>멈추는 걸 잊었다면 고치기</b>`}
   else{hero.style.removeProperty('--tint');hero.classList.remove('on');$('forgot').hidden=true;$('heroChip').textContent=total?'쉬는 중':'과목 옆 ▶ 버튼으로 시작하세요'}
+  renderPomoHero(now,total);
   document.querySelectorAll('[data-t]').forEach(el=>el.textContent=hms(daySec(today,el.dataset.t)));
 
   const info=infoSec(),hours=Math.floor(info/3600);
@@ -930,7 +994,7 @@ $('sDel').onclick=()=>{
 };
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&!$('sheetBg').hidden)return closeSheet();
-  if(/INPUT|TEXTAREA/.test(e.target.tagName)||!$('sheetBg').hidden||!$('recBg').hidden||!$('ddBg').hidden||e.metaKey||e.ctrlKey||e.altKey)return;
+  if(/INPUT|TEXTAREA/.test(e.target.tagName)||!$('sheetBg').hidden||!$('recBg').hidden||!$('ddBg').hidden||!$('pmBg').hidden||e.metaKey||e.ctrlKey||e.altKey)return;
   if(view==='timer'&&/^[1-9]$/.test(e.key)){const s=S.subjects[Number(e.key)-1];if(s){e.preventDefault();toggle(s.id)}}
 });
 $('addBtn').onclick=()=>openSheet(null);
@@ -960,6 +1024,104 @@ function renderMonth(){
   $('ttSub').textContent=monthOffset===0?'이번 달 총 공부':`${m+1}월 총 공부`;
   $('mStats').innerHTML=`<div><small>공부한 날</small><b class="num">${studied}일</b></div><div><small>하루 평균</small><b class="num">${studied?hm(total/studied):'0분'}</b></div><div><small>최고 기록${best?` (${m+1}/${bestDay})`:''}</small><b class="num">${best?hm(best):'없음'}</b></div>`;
 }
+/* ───── 뽀모도로 ───── */
+const PSET={focus:25,short:5,long:15,every:4,auto:true};
+function fixPomo(){const p=S.pomo||{};S.pomo={on:false,phase:'idle',endAt:0,phaseStart:0,count:0,last:null,done:{},...p,set:{...PSET,...(p.set||{})}}}
+fixPomo();
+const P=()=>S.pomo;
+const plen=ph=>S.pomo.set[ph==='focus'?'focus':ph==='long'?'long':'short']*60e3;
+let actx=null;
+function audioUnlock(){try{actx=actx||new(window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume()}catch(e){}}
+function beep(n=3){try{if(!actx)return;let t0=actx.currentTime;for(let i=0;i<n;i++){const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=i===n-1?1046:880;o.connect(g);g.connect(actx.destination);g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(.25,t0+.02);g.gain.exponentialRampToValueAtTime(.001,t0+.35);o.start(t0);o.stop(t0+.4);t0+=.45}}catch(e){}}
+let wl=null;
+async function wake(on){try{if(on&&!wl&&navigator.wakeLock){wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>{wl=null})}else if(!on&&wl){await wl.release();wl=null}}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){tick();if(S.pomo.on&&S.pomo.phase!=='idle'&&S.pomo.phase!=='ready')wake(true)}});
+
+function startFocus(sid,at){
+  const p=P();
+  if(S.running){addSession(S.running.sid,S.running.start,at);S.running=null}
+  S.running={sid,start:at};p.phase='focus';p.phaseStart=at;p.endAt=at+plen('focus');p.last=sid;wake(true);
+}
+function endFocus(at,done){
+  const p=P();
+  if(S.running){addSession(S.running.sid,S.running.start,Math.max(S.running.start,at));S.running=null}
+  if(!done){p.phase='idle';wake(false);return}
+  p.count++;const k=dayKey(at-1);p.done[k]=(p.done[k]||0)+1;
+  const ph=p.count%p.set.every===0?'long':'short';
+  p.phase=ph;p.phaseStart=at;p.endAt=at+plen(ph);
+}
+function pomoTick(now){
+  const p=P();if(!p.on)return;
+  let changed=false;
+  if(p.phase==='focus'){
+    if(!S.running){p.phase='idle';changed=true}
+    else if(now>=p.endAt){endFocus(p.endAt,true);changed=true;beep(3);
+      toast(p.phase==='long'?`집중 ${p.set.focus}분 완료! 긴 휴식 ${p.set.long}분이에요`:`집중 ${p.set.focus}분 완료! ${p.set.short}분 쉬어요`)}
+  }else if(p.phase==='short'||p.phase==='long'){
+    if(S.running){p.phase='focus';p.phaseStart=S.running.start;p.endAt=S.running.start+plen('focus');changed=true}
+    else if(now>=p.endAt){changed=true;
+      const sub=S.subjects.find(x=>x.id===p.last);
+      if(p.set.auto&&sub&&now-p.endAt<60e3){startFocus(p.last,p.endAt);beep(2);toast(`휴식 끝! ${sub.name} 집중을 다시 시작했어요`)}
+      else{p.phase='ready';wake(false);if(now-p.endAt<60e3){beep(2);toast('휴식 끝! 다음 집중을 시작해 볼까요')}}
+    }
+  }else if(S.running){p.phase='focus';p.phaseStart=S.running.start;p.endAt=Math.max(now+60e3,S.running.start+plen('focus'));p.last=S.running.sid;changed=true}
+  if(changed){save();renderSubjects();if(view==='timer'&&ttMode==='day')renderTable()}
+}
+const mmss=ms=>{const s=Math.max(0,Math.ceil(ms/1000));return`${pad(Math.floor(s/60))}:${pad(s%60)}`};
+function renderPomoHero(now,total){
+  const p=P(),hero=$('hero');
+  $('pomoBox').hidden=!p.on;$('pmGear').hidden=!p.on;
+  document.querySelectorAll('[data-hm]').forEach(b=>b.setAttribute('aria-selected',(b.dataset.hm==='pomo')===p.on));
+  if(!p.on){document.title='공부 주식';return}
+  $('forgot').hidden=true;
+  const ph=p.phase,brk=ph==='short'||ph==='long',run=ph==='focus'&&S.running;
+  const lenNow=run?p.endAt-p.phaseStart:brk?p.endAt-p.phaseStart:plen('focus');
+  const left=run||brk?p.endAt-now:plen('focus');
+  hero.classList.toggle('brk',brk);
+  $('heroDate').textContent=run?`집중 · ${subj(S.running.sid).name}`:brk?(ph==='long'?'긴 휴식':'짧은 휴식'):ph==='ready'?'휴식이 끝났어요':'뽀모도로';
+  $('heroTime').textContent=mmss(left);
+  $('heroChip').textContent=`오늘 총 공부 ${hms(total)}`;
+  $('pBar').style.width=(run||brk?Math.min(100,(1-left/lenNow)*100):0)+'%';
+  const inCycle=p.count%p.set.every;
+  $('pDots').innerHTML=Array.from({length:p.set.every},(_,i)=>`<i class="${i<inCycle||(inCycle===0&&ph==='long')?'on':''}${run&&i===inCycle?' cur':''}"></i>`).join('');
+  const today=p.done[dayKey(now)]||0;
+  $('pSub').textContent=`오늘 뽀모도로 ${today}회 · 긴 휴식까지 ${p.set.every-inCycle}회`;
+  const last=S.subjects.find(x=>x.id===p.last);
+  const btns=run?`<button class="ghost" data-pa="stop">그만하기 (여기까지 기록)</button>`
+    :brk?`<button class="ghost" data-pa="skip">휴식 건너뛰기</button>`
+    :last?`<button class="btn-main pgo" data-pa="go">${esc(last.name)} 집중 시작</button>`:'<span class="psub">과목 옆 ▶를 누르면 집중이 시작돼요</span>';
+  if($('pBtns').dataset.k!==ph+(last?last.id:'')){$('pBtns').innerHTML=btns;$('pBtns').dataset.k=ph+(last?last.id:'')}
+  document.title=run||brk?`${mmss(left)} ${run?'집중':'휴식'} · 공부 주식`:'공부 주식';
+}
+$('pBtns').onclick=e=>{const b=e.target.closest('[data-pa]');if(!b)return;audioUnlock();const p=P(),now=Date.now();
+  if(b.dataset.pa==='stop'){endFocus(now,false);toast('집중을 멈췄어요. 여기까지 기록했어요')}
+  if(b.dataset.pa==='skip'){p.phase='ready';wake(false)}
+  if(b.dataset.pa==='go'&&p.last){startFocus(p.last,now);viewOffset=0}
+  $('pBtns').dataset.k='';save();renderSubjects();tick()};
+document.querySelectorAll('[data-hm]').forEach(b=>b.onclick=()=>{
+  const p=P(),on=b.dataset.hm==='pomo';if(on===p.on)return;audioUnlock();
+  p.on=on;$('pBtns').dataset.k='';
+  if(on){p.phase='idle';if(S.running){p.phase='focus';p.phaseStart=S.running.start;p.endAt=Math.max(Date.now()+60e3,S.running.start+plen('focus'));p.last=S.running.sid;wake(true)}
+    toast(S.running?'뽀모도로로 바꿨어요. 지금 측정 중인 공부가 집중 시간으로 이어져요':`과목 ▶를 누르면 ${p.set.focus}분 집중이 시작돼요`)}
+  else{p.phase='idle';$('hero').classList.remove('brk');wake(false)}
+  save();tick()});
+/* 설정 */
+const PROWS=[['focus','집중',5,90,5,'분'],['short','짧은 휴식',1,30,1,'분'],['long','긴 휴식',5,60,5,'분'],['every','긴 휴식 간격',2,8,1,'회마다']];
+function renderPm(){const s=P().set;
+  $('pmRows').innerHTML=PROWS.map(([k,n,,,,u])=>`<div class="pmrow"><span>${n}</span><div class="stp"><button data-pk="${k}" data-d="-1" aria-label="${n} 줄이기">−</button><b class="num">${s[k]}${u}</b><button data-pk="${k}" data-d="1" aria-label="${n} 늘리기">+</button></div></div>`).join('')
+  +`<div class="pmrow"><span>휴식이 끝나면 다음 집중 자동 시작</span><button class="sw" id="pmAuto" aria-pressed="${s.auto}"><i></i></button></div>`;
+  document.querySelectorAll('[data-pre]').forEach(b=>{const[f,sh]=b.dataset.pre.split(',').map(Number);b.setAttribute('aria-pressed',s.focus===f&&s.short===sh)});
+}
+function pmApply(){const p=P();if(p.phase==='focus'||p.phase==='short'||p.phase==='long')p.endAt=p.phaseStart+plen(p.phase);save();tick()}
+$('pmRows').onclick=e=>{const s=P().set,b=e.target.closest('[data-pk]');
+  if(b){const[k,,mn,mx,st]=PROWS.find(r=>r[0]===b.dataset.pk);s[k]=Math.min(mx,Math.max(mn,s[k]+st*Number(b.dataset.d)));renderPm();pmApply()}
+  if(e.target.closest('#pmAuto')){s.auto=!s.auto;renderPm();save()}};
+document.querySelectorAll('[data-pre]').forEach(b=>b.onclick=()=>{const[f,sh,l]=b.dataset.pre.split(',').map(Number);Object.assign(P().set,{focus:f,short:sh,long:l});renderPm();pmApply()});
+$('pmGear').onclick=()=>{renderPm();$('pmBg').hidden=false};
+$('pmDone').onclick=()=>{$('pmBg').hidden=true};
+$('pmBg').onclick=e=>{if(e.target.id==='pmBg')$('pmBg').hidden=true};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('pmBg').hidden)$('pmBg').hidden=true});
+
 /* ───── 기록 고치기·추가 ───── */
 let recDay=null,rec=null,recArmed=false;
 const toHM=ts=>{const d=new Date(ts);return pad(d.getHours())+':'+pad(d.getMinutes())};
@@ -1064,7 +1226,7 @@ $('bkIn').onclick=()=>$('bkFile').click();
 $('bkFile').onchange=async e=>{
   const f=e.target.files[0];e.target.value='';if(!f)return;
   try{const o=JSON.parse(await f.text());if(!Array.isArray(o.sessions)||!o.stock)throw 0;
-    S={subjects:o.subjects||[],sessions:o.sessions,running:o.running||null,stock:o.stock,ddays:o.ddays||[]};
+    S={subjects:o.subjects||[],sessions:o.sessions,running:o.running||null,stock:o.stock,ddays:o.ddays||[],pomo:o.pomo||null};fixPomo();
     histCache={key:null};await st.set(KEY,JSON.stringify(S));renderSubjects();renderDday();tick();toast('백업을 불러왔어요')}
   catch(err){toast('올바른 백업 파일이 아니에요')}
 };
@@ -1113,7 +1275,8 @@ $('cal').onclick=e=>{const b=e.target.closest('[data-day]');if(!b)return;
 (async()=>{
   let raw=await st.get(KEY);
   if(!raw)raw=await st.get('miljul-state-v1');
-  if(raw){try{const o=JSON.parse(raw);S.subjects=o.subjects||S.subjects;S.sessions=o.sessions||[];S.running=o.running||null;S.stock=o.stock||null;S.ddays=o.ddays||[]}catch(e){}}
+  if(raw){try{const o=JSON.parse(raw);S.subjects=o.subjects||S.subjects;S.sessions=o.sessions||[];S.running=o.running||null;S.stock=o.stock||null;S.ddays=o.ddays||[];S.pomo=o.pomo||null}catch(e){}}
+  fixPomo();
   // 예전 색(비비드·무채색)은 저채도 팔레트로 바꿔 줌
   S.subjects.forEach((s,i)=>{if(!COLORS.includes(s.color))s.color=COLORS[i%COLORS.length]});
   if(!S.stock){S.stock={start:shiftKey(dayKey(Date.now()),-30),cash:SEED_CASH,seed:SEED_CASH,v:2,hold:{},spent:0,hints:{},salt:Math.random().toString(36).slice(2,8)};save()}
