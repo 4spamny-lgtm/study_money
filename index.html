@@ -452,7 +452,7 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
         </article>
         <article class="card mcard">
           <h3><em>6</em>단서 3단계</h3>
-          <p>종목을 고르고 <b>내일 주가 단서</b>를 사요. 다음 오전 5시에 일어날 일에 대한 정보예요. 단계마다 종목당 한 번씩 살 수 있어요.</p>
+          <p>종목을 고르고 <b>내일 주가 단서</b>를 사요. 다음 오전 5시에 일어날 일에 대한 정보예요. 단계는 차례로 올릴 수 있어요. 1시간 단서를 산 뒤 1시간을 더 쓰면 업계 소문이, 다시 1시간을 더 쓰면 확정 뉴스가 열려요. 높은 단계를 바로 사면 아래 단계도 함께 열려요.</p>
           <div class="trow"><b>1시간</b><div>희미한 단서<span>분위기나 목격담 정도라 추리가 필요해요. 30% 확률로 엉뚱한 단서예요.</span></div></div>
           <div class="trow"><b>2시간</b><div>업계 소문<span>방향이 꽤 보여요. 10% 확률로 헛소문이에요.</span></div></div>
           <div class="trow"><b>3시간</b><div>확정 뉴스<span>무슨 일이 일어날지 확실해요. 다만 몇 % 움직일지는 몰라요.</span></div></div>
@@ -799,9 +799,9 @@ function renderCo(){
     <div class="d-news"><span>오늘의 뉴스</span>${esc(e.ev.calm?'특별한 소식 없이 지나간 하루였어요.':e.ev.t3)}</div>
     <div class="d-grid">
       <div class="box"><h4>내일 주가 단서 <small id="hInfo">정보 시간 ${hm(infoSec())}</small></h4>
-        <div class="tiers">${TIERS.map((t,i)=>{const own=bought.includes(i+1);
-          return`<button class="tier${own?' owned':''}" data-tier="${i+1}" ${own?'disabled':''}><div><b>${t.n}</b><small>${t.r}</small></div><span>${own?'구매함':`${t.h}시간`}</span></button>`}).join('')}</div>
-        ${[...bought].sort().map(t=>`<div class="hint"><small>${TIERS[t-1].n}</small><p>${esc(hintText(c,t,tomorrow))}</p></div>`).join('')}
+        <div class="tiers">${TIERS.map((t,i)=>{const own=i+1<=ownedTier(bought),c2=tierCost(i+1,bought)/3600;
+          return`<button class="tier${own?' owned':''}" data-tier="${i+1}" ${own?'disabled':''}><div><b>${t.n}</b><small>${t.r}</small></div><span>${own?'열림':ownedTier(bought)?`+${c2}시간`:`${t.h}시간`}</span></button>`}).join('')}</div>
+        ${Array.from({length:ownedTier(bought)},(_,i)=>i+1).map(t=>`<div class="hint"><small>${TIERS[t-1].n}</small><p>${esc(hintText(c,t,tomorrow))}</p></div>`).join('')}
         <p class="note">${bought.length?'단서를 보고 오늘 안에 사거나 팔아 두세요. 결과는 다음 오전 5시에 나와요.':`희미한 단서는 30%, 업계 소문은 10% 확률로 엉뚱한 이야기가 섞여 있어요.`}</p>
       </div>
       <div class="box"><h4>거래 <small>현금 ${won(S.stock.cash)}</small></h4>
@@ -825,20 +825,24 @@ function updateTrade(){
   $('qCost').textContent=`${qty}주 × ${won(p)} = ${won(qty*p)}`;
   $('doBuy').disabled=qty*p>S.stock.cash;$('doSell').disabled=qty>h.q;
 }
-function updateTierButtons(){const info=infoSec();$('detail').querySelectorAll('[data-tier]').forEach(b=>{if(!b.classList.contains('owned'))b.disabled=info<TIERS[b.dataset.tier-1].h*3600})}
+function updateTierButtons(){const info=infoSec(),cur=(S.stock.hints[shiftKey(dayKey(Date.now()),1)]||{})[openCo]||[];$('detail').querySelectorAll('[data-tier]').forEach(b=>{if(!b.classList.contains('owned'))b.disabled=info<tierCost(Number(b.dataset.tier),cur)})}
 function trade(dir){
   const p=priceOf(openCo).price,h=S.stock.hold[openCo]||{q:0,avg:0},c=CO.find(x=>x.id===openCo);
   if(dir>0){if(qty*p>S.stock.cash)return toast('현금이 부족해요');h.avg=(h.avg*h.q+p*qty)/(h.q+qty);h.q+=qty;S.stock.cash-=qty*p;toast(`${c.n} ${qty}주를 샀어요`)}
   else{if(qty>h.q)return toast('보유 수량보다 많이 팔 수 없어요');h.q-=qty;S.stock.cash+=qty*p;if(!h.q)h.avg=0;toast(`${c.n} ${qty}주를 팔았어요`)}
   S.stock.hold[openCo]=h;qty=1;save();renderCo();renderStock();
 }
+/* 단서는 단계를 올리는 방식: 이미 산 단계의 시간만큼은 다시 내지 않음 (1시간 → +1시간 → +1시간) */
+const ownedTier=list=>list&&list.length?Math.max(...list):0;
+const tierCost=(t,list)=>{const o=ownedTier(list);return t<=o?0:(TIERS[t-1].h-(o?TIERS[o-1].h:0))*3600};
 function buyHint(t){
-  const cost=TIERS[t-1].h*3600;if(infoSec()<cost)return toast(`공부시간이 ${hm(cost-infoSec())} 더 필요해요`);
+  const tm=shiftKey(dayKey(Date.now()),1),cur=(S.stock.hints[tm]||{})[openCo]||[];
+  if(t<=ownedTier(cur))return;
+  const cost=tierCost(t,cur);if(infoSec()<cost)return toast(`공부시간이 ${hm(cost-infoSec())} 더 필요해요`);
   const tomorrow=shiftKey(dayKey(Date.now()),1);
   S.stock.hints[tomorrow]=S.stock.hints[tomorrow]||{};
   const list=S.stock.hints[tomorrow][openCo]=S.stock.hints[tomorrow][openCo]||[];
-  if(list.includes(t))return;
-  list.push(t);S.stock.spent+=cost;save();toast(`${TIERS[t-1].n}를 손에 넣었어요`);renderCo();renderStock();tick();
+  list.length=0;for(let i=1;i<=t;i++)list.push(i);S.stock.spent+=cost;save();toast(`${TIERS[t-1].n}를 손에 넣었어요`);renderCo();renderStock();tick();
 }
 $('coFilter').onclick=e=>{const b=e.target.closest('button');if(!b)return;
   if(b.hasAttribute('data-sort')){coSort=!coSort;b.setAttribute('aria-pressed',coSort)}
