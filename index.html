@@ -163,7 +163,14 @@ button:disabled{cursor:default}
 .s-name{flex:1;min-width:0;font-size:17px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .s-time{font-size:16px;color:var(--soft)}
 .row.on .s-time{color:var(--ink);font-weight:600}
-.more{width:40px;height:40px;border-radius:12px;color:var(--faint);display:grid;place-items:center}
+.sh-btns{display:flex;gap:6px}
+.sh-btns #editSubj[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.row.editing{gap:8px}
+.mini{height:38px;min-width:38px;border-radius:10px;background:var(--bg);font-size:15px;font-weight:700;color:var(--ink)}
+.mini:disabled{opacity:.3}
+.mini.wide{padding:0 12px;font-size:13px}
+.mini.del{color:var(--up)}
+.more{width:40px;height:40px;border-radius:12px;color:var(--soft);display:grid;place-items:center}
 .more:hover{background:var(--hover)}
 .play{width:48px;height:48px;border-radius:50%;background:var(--c);color:var(--fg);display:grid;place-items:center;flex:none;transition:transform .15s}
 .play:active{transform:scale(.92)}
@@ -498,9 +505,9 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
           </div>
         </div>
         <div class="card">
-          <div class="sec-head"><h2>과목</h2><button class="ghost" id="addBtn">+ 과목 추가</button></div>
+          <div class="sec-head"><h2>과목</h2><div class="sh-btns"><button class="ghost" id="editSubj" aria-pressed="false">편집</button><button class="ghost" id="addBtn">+ 과목 추가</button></div></div>
           <ul class="subjects" id="subjects"></ul>
-          <p class="hint-line">키보드가 연결돼 있으면 숫자 키로 바로 시작·정지할 수 있어요</p>
+          <p class="hint-line" id="subjHint">키보드가 연결돼 있으면 숫자 키로 바로 시작·정지할 수 있어요</p>
         </div>
       </div>
       <div class="col">
@@ -577,7 +584,7 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
       <div class="manual">
         <article class="card mcard">
           <h3><em>1</em>타이머 쓰기</h3>
-          <p>타이머 화면에서 <b>+ 과목 추가</b>를 눌러 과목 이름과 색을 정해요. 과목 옆 ▶ 버튼을 누르면 시간이 재기 시작하고, 다시 누르면 멈춰요.</p>
+          <p>타이머 화면에서 <b>+ 과목 추가</b>를 눌러 과목 이름과 색을 정해요. <b>편집</b>을 누르면 과목 순서를 바꾸거나 이름·색을 고치고 지울 수 있어요. 과목 옆 ▶ 버튼을 누르면 시간이 재기 시작하고, 다시 누르면 멈춰요.</p>
           <ul>
             <li>한 번에 한 과목만 잴 수 있어요. 다른 과목의 ▶를 누르면 자동으로 바뀌어요.</li>
             <li>⋯ 버튼으로 이름과 색을 바꾸거나 과목을 지울 수 있어요.</li>
@@ -687,6 +694,7 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
     <h3 id="sheetTitle">과목 추가</h3>
     <input id="sName" maxlength="16" placeholder="과목 이름" aria-label="과목 이름">
     <div class="palette" id="palette" role="radiogroup" aria-label="과목 색"></div>
+    <p class="note" id="sDelNote" hidden style="margin:-8px 2px 16px">과목을 지워도 지난 공부 기록은 "삭제된 과목"으로 남아서 공부시간과 정보 시간에 그대로 포함돼요.</p>
     <div class="actions">
       <button class="btn-del" id="sDel" hidden>삭제</button>
       <button class="btn-sub" id="sCancel">취소</button>
@@ -931,8 +939,19 @@ function toggle(sid){
   if(!same){S.running={sid,start:now};viewOffset=0}
   renderSubjects();tick();save();
 }
+let subjEdit=false;
 function renderSubjects(){
   const el=$('subjects');
+  $('editSubj').textContent=subjEdit?'완료':'편집';$('editSubj').setAttribute('aria-pressed',subjEdit);
+  $('subjHint').textContent=subjEdit?'↑↓로 순서를 바꾸면 숫자 키와 정원 구역 순서도 함께 바뀌어요':'키보드가 연결돼 있으면 숫자 키로 바로 시작·정지할 수 있어요';
+  if(subjEdit&&S.subjects.length){
+    el.innerHTML=S.subjects.map((x,i)=>`<li class="row editing" style="--c:${cv(x.color)}"><span class="key">${i<9?i+1:''}</span><span class="dot"></span><span class="s-name">${esc(x.name)}</span>
+      <button class="mini" data-mv="${x.id}" data-d="-1" ${i===0?'disabled':''} aria-label="${esc(x.name)} 위로">↑</button>
+      <button class="mini" data-mv="${x.id}" data-d="1" ${i===S.subjects.length-1?'disabled':''} aria-label="${esc(x.name)} 아래로">↓</button>
+      <button class="mini wide" data-edit="${x.id}">수정</button>
+      <button class="mini wide del" data-edit="${x.id}" data-askdel>삭제</button></li>`).join('');
+    return;
+  }
   if(!S.subjects.length){el.innerHTML='<li class="empty">+ 과목 추가를 눌러 첫 과목을 만들어 보세요</li>';return}
   el.innerHTML=S.subjects.map((x,i)=>{const on=S.running&&S.running.sid===x.id;
     return`<li class="row${on?' on':''}" style="--c:${cv(x.color)};--fg:${fgv(x.color)}"><span class="key">${i<9?i+1:''}</span><span class="dot"></span><span class="s-name">${esc(x.name)}</span>
@@ -1101,17 +1120,18 @@ document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.data
 /* 과목 모달 */
 function openSheet(id){
   editId=id;armedDel=false;const s=id?subj(id):null;
-  pick=s?s.color:COLORS[S.subjects.length%COLORS.length];
+  pick=s?s.color:(COLORS.find(c=>!S.subjects.some(x=>x.color===c))||COLORS[S.subjects.length%COLORS.length]);
   $('sheetTitle').textContent=s?'과목 수정':'과목 추가';$('sName').value=s?s.name:'';
-  $('sDel').hidden=!s;$('sDel').textContent='삭제';renderPalette();$('sheetBg').hidden=false;setTimeout(()=>$('sName').focus(),50);
+  $('sDel').hidden=!s;$('sDel').textContent='삭제';$('sDelNote').hidden=!s;renderPalette();$('sheetBg').hidden=false;setTimeout(()=>$('sName').focus(),50);
 }
 const closeSheet=()=>{$('sheetBg').hidden=true};
 function renderPalette(){$('palette').innerHTML=COLORS.map(c=>`<button role="radio" aria-checked="${c===pick}" aria-label="색상" data-c="${c}" style="--c:${cv(c)}"></button>`).join('')}
 $('palette').onclick=e=>{const b=e.target.closest('[data-c]');if(b){pick=b.dataset.c;renderPalette()}};
 function saveSheet(){
   const n=$('sName').value.trim();if(!n)return $('sName').focus();
+  if(S.subjects.some(x=>x.name===n&&x.id!==editId))return toast('같은 이름의 과목이 이미 있어요');
   if(editId){const s=S.subjects.find(x=>x.id===editId);s.name=n;s.color=pick}else S.subjects.push({id:'s'+Date.now().toString(36),name:n,color:pick});
-  closeSheet();renderSubjects();tick();save();
+  closeSheet();ensureGarden();renderSubjects();tick();save();if(view==='garden')renderGarden(true);
 }
 $('sSave').onclick=saveSheet;
 $('sName').onkeydown=e=>{if(e.key==='Enter')saveSheet()};
@@ -1128,7 +1148,13 @@ document.addEventListener('keydown',e=>{
   if(view==='timer'&&/^[1-9]$/.test(e.key)){const s=S.subjects[Number(e.key)-1];if(s){e.preventDefault();toggle(s.id)}}
 });
 $('addBtn').onclick=()=>openSheet(null);
-$('subjects').onclick=e=>{const p=e.target.closest('[data-play]');if(p)return toggle(p.dataset.play);const ed=e.target.closest('[data-edit]');if(ed)openSheet(ed.dataset.edit)};
+$('subjects').onclick=e=>{
+  const p=e.target.closest('[data-play]');if(p)return toggle(p.dataset.play);
+  const mv=e.target.closest('[data-mv]');
+  if(mv){const i=S.subjects.findIndex(x=>x.id===mv.dataset.mv),j=i+Number(mv.dataset.d);if(j<0||j>=S.subjects.length)return;
+    [S.subjects[i],S.subjects[j]]=[S.subjects[j],S.subjects[i]];save();renderSubjects();tick();if(view==='garden')renderGarden(true);return}
+  const ed=e.target.closest('[data-edit]');if(ed){openSheet(ed.dataset.edit);if(ed.hasAttribute('data-askdel'))setTimeout(()=>$('sDel').focus(),60)}};
+$('editSubj').onclick=()=>{subjEdit=!subjEdit;renderSubjects();tick()};
 $('prev').onclick=()=>{if(ttMode==='month')monthOffset--;else viewOffset--;renderTable()};
 $('next').onclick=()=>{if(ttMode==='month'){if(monthOffset<0)monthOffset++}else if(viewOffset<0)viewOffset++;renderTable()};
 function setMode(m){ttMode=m;document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-selected',b.dataset.mode===m));
