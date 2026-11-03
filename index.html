@@ -434,6 +434,24 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
 .gv-stats{font-size:14px;color:var(--soft);margin-top:10px}
 @media (max-width:960px){.garden-view{height:auto;padding:14px}}
 
+.cmp .sec-head h2{display:flex;align-items:center;gap:8px}
+.tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--ink);color:var(--surface)}
+.cmp-desc{font-size:13px;color:var(--soft);padding:0 20px;line-height:1.55}
+.cmp-desc b{color:var(--ink)}
+.cmp-list{list-style:none;margin:10px 20px 0;padding:10px 12px;border-radius:12px;background:var(--bg);font-size:14px;font-weight:600}
+.cmp-list li+li{margin-top:6px;padding-top:6px;border-top:1px solid var(--line)}
+.cmp-act{padding:12px 20px 18px}
+.cmp-act .btn-main,#cmpGo{width:100%;height:46px;border-radius:12px;font-weight:700;font-size:15px}
+.cmp-act .btn-main:disabled,#cmpGo:disabled{opacity:.35}
+.cmp-pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px}
+.cmp-pick button{position:relative;height:44px;border-radius:12px;background:var(--bg);font-size:14px;font-weight:600;border:2px solid transparent}
+.cmp-pick button[aria-pressed="true"]{border-color:var(--ink);background:var(--surface)}
+.cmp-pick em{position:absolute;top:-7px;left:-7px;width:20px;height:20px;border-radius:50%;background:var(--ink);color:var(--surface);font-style:normal;font-size:11px;font-weight:800;display:grid;place-items:center}
+.cmp-res{margin-top:14px;padding:14px 16px;border-radius:14px;background:var(--ink);color:var(--surface)}
+.cmp-res small{display:block;font-size:12px;opacity:.6;font-weight:600}
+.cmp-res b{font-size:17px;font-weight:700}
+.hint .rng{margin-top:6px;font-size:14px;font-weight:700}
+.hint.cmph{border-left-style:dashed}
 /* ── 모달 ── */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.35);display:grid;place-items:center;z-index:10;animation:fade .2s;padding:20px}
 .modal{width:100%;max-width:440px;background:var(--surface);border-radius:24px;padding:26px 24px 22px;animation:pop .22s cubic-bezier(.2,.8,.2,1)}
@@ -546,6 +564,12 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
             <div><small>정보 시간</small><b class="num" id="aInfo"></b></div>
           </div>
         </div>
+        <div class="card cmp">
+          <div class="sec-head"><h2>변동폭 비교 <span class="tag">특별 코너</span></h2><small id="cmpLeft"></small></div>
+          <p class="cmp-desc">두 종목 중 내일 어느 쪽이 <b>더 크게</b> 움직일지 알려줘요. 오를지 내릴지는 알려주지 않아요.</p>
+          <ul class="cmp-list" id="cmpList"></ul>
+          <div class="cmp-act"><button class="btn-main" id="cmpOpen">정보 2시간으로 비교하기</button></div>
+        </div>
         <div class="card">
           <div class="sec-head"><h2>종목 <small id="coCount"></small></h2><small>매일 오전 4시 변동</small></div>
           <div class="chips" id="coFilter"><button data-f="all" aria-pressed="true">전체</button><button data-f="hold" aria-pressed="false">보유</button><button data-f="hint" aria-pressed="false">단서 구매</button><button class="sep" data-sort aria-pressed="false">등락률순</button></div>
@@ -617,7 +641,8 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
           <p>종목을 고르고 <b>내일 주가 단서</b>를 사요. 다음 오전 4시에 일어날 일에 대한 정보예요. 단계는 차례로 올릴 수 있어요. 1시간 단서를 산 뒤 1시간을 더 쓰면 업계 소문이, 다시 1시간을 더 쓰면 확정 뉴스가 열려요. 높은 단계를 바로 사면 아래 단계도 함께 열려요.</p>
           <div class="trow"><b>1시간</b><div>희미한 단서<span>분위기나 목격담 정도라 추리가 필요해요. 30% 확률로 엉뚱한 단서예요.</span></div></div>
           <div class="trow"><b>2시간</b><div>업계 소문<span>방향이 꽤 보여요. 10% 확률로 헛소문이에요.</span></div></div>
-          <div class="trow"><b>3시간</b><div>확정 뉴스<span>무슨 일이 일어날지 확실해요. 다만 몇 % 움직일지는 몰라요.</span></div></div>
+          <div class="trow"><b>3시간</b><div>확정 뉴스<span>무슨 일이 일어날지 확실하고, "예상 등락폭 +9% ~ +15%"처럼 실제 등락률이 들어 있는 범위도 알려줘요.</span></div></div>
+          <div class="trow"><b>2시간</b><div>변동폭 비교 (특별 코너)<span>두 종목을 고르면 내일 어느 쪽이 더 크게 움직일지 알려줘요. 오를지 내릴지는 알려주지 않고, 차이가 1.5%p보다 작으면 "비슷해요"라고 나와요. 하루 두 번까지 쓸 수 있어요.</span></div></div>
         </article>
         <article class="card mcard">
           <h3><em>7</em>주가가 움직이는 방식</h3>
@@ -717,6 +742,16 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
     <div class="gv-head"><h3 id="gvTitle"></h3><button class="ghost" id="gvSave">이미지로 저장</button><button class="x" id="gvClose" aria-label="닫기">✕</button></div>
     <div class="gboard" id="gvBoard"></div>
     <p class="gv-stats" id="gvStats"></p>
+  </div>
+</div>
+
+<div class="modal-bg" id="cmpBg" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="cmpTitle" style="max-width:560px">
+    <h3 id="cmpTitle">변동폭 비교</h3>
+    <p class="note" style="margin:-8px 0 12px">비교할 두 종목을 골라 주세요. 다음 오전 4시 변동에서 어느 쪽이 더 크게 움직일지(오르든 내리든) 알려 드려요.</p>
+    <div class="cmp-pick" id="cmpPick"></div>
+    <div class="cmp-res" id="cmpRes" hidden></div>
+    <div class="actions" style="margin-top:16px"><button class="btn-sub" id="cmpClose">닫기</button><button class="btn-main" id="cmpGo">2시간 써서 비교하기</button></div>
   </div>
 </div>
 
@@ -851,7 +886,7 @@ const CALM={lo:-2.5,hi:2.5,calm:true,
   t2:n=>`${n} 관련해서는 특별한 소문이 들리지 않는다.`,
   t3:n=>`${n}: 예정된 발표나 공시 없음. 시장 흐름에 따라 소폭 움직일 전망`};
 
-const TIERS=[{h:1,n:'희미한 단서',r:'추리가 필요해요'},{h:2,n:'업계 소문',r:'대체로 맞아요'},{h:3,n:'확정 뉴스',r:'사건은 확실해요'}];
+const TIERS=[{h:1,n:'희미한 단서',r:'추리가 필요해요'},{h:2,n:'업계 소문',r:'대체로 맞아요'},{h:3,n:'확정 뉴스',r:'사건 + 등락폭 범위'}];
 
 
 function rng(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19}
@@ -920,6 +955,11 @@ const priceOf=id=>{const a=history()[id];return a[a.length-1]};
 function portfolio(){let v=0;for(const[id,h]of Object.entries(S.stock.hold))if(h.q)v+=h.q*priceOf(id).price;return{stock:v,total:S.stock.cash+v}}
 const sign=x=>x>0.0001?'up':x<-0.0001?'down':'flat';
 const pctTxt=x=>(x>0?'▲ ':x<0?'▼ ':'')+Math.abs(x).toFixed(2)+'%';
+/* 내일 실제 등락률 (주가 계산과 똑같은 식) */
+function nextChange(c){const tm=shiftKey(dayKey(Date.now()),1),p=priceOf(c.id).price,e=eventFor(c,tm),pct=e.base+market(tm)-Math.log(p/c.base)*6,ts=tickSz(p),np=Math.max(Math.round(c.base*.15),Math.round(p*(1+pct/100)/ts)*ts);return(np/p-1)*100}
+const fmtP=x=>(x>0?'+':x<0?'−':'')+Math.abs(x)+'%';
+/* 확정 뉴스에 붙는 등락폭 범위: 실제 값이 반드시 들어 있는 5~8%p 폭 */
+function rangeText(c,day){const x=nextChange(c),r=rng(day+'|'+c.id+'|range|'+S.stock.salt),w=5+Math.round(r()*3),lo=Math.floor(x-w*(.15+.7*r()));return`예상 등락폭 ${fmtP(lo)} ~ ${fmtP(lo+w)}`}
 function hintText(c,tier,day){
   const e=eventFor(c,day),r=rng(day+'|'+c.id+'|hint'+tier+'|'+S.stock.salt);let ev=e.ev;
   if((tier===1&&r()<.3)||(tier===2&&r()<.1)){const pool=[CALM,...c.ev].filter(x=>x!==ev);ev=pool[Math.floor(r()*pool.length)]}
@@ -992,7 +1032,7 @@ function tick(){
   document.querySelectorAll('[data-t]').forEach(el=>el.textContent=hms(daySec(today,el.dataset.t)));
 
   const info=infoSec(),hours=Math.floor(info/3600);
-  if(view==='stock'){$('aInfo').textContent=hm(info);const hi=$('hInfo');if(hi)hi.textContent=`정보 시간 ${hm(info)}`}
+  if(view==='stock'){renderCmp();$('aInfo').textContent=hm(info);const hi=$('hInfo');if(hi)hi.textContent=`정보 시간 ${hm(info)}`}
   if(lastDdKey!==today){lastDdKey=today;renderDday()}
 
   if(view==='timer')renderTable();
@@ -1007,6 +1047,7 @@ function spark(arr,w=60,h=28){
   return`<svg class="spark" viewBox="0 0 ${w} ${h}"><polyline points="${pts}" fill="none" stroke="${a[a.length-1]>=a[0]?'var(--up)':'var(--down)'}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
 function renderStock(){
+  renderCmp();
   const SEED=S.stock.seed||SEED_CASH,pf=portfolio(),rate=(pf.total/SEED-1)*100,today=dayKey(Date.now()),tomorrow=shiftKey(today,1);
   $('aTotal').textContent=won(pf.total);
   $('aRate').className='rt num '+sign(rate);
@@ -1056,7 +1097,8 @@ function renderCo(){
       <div class="box"><h4>내일 주가 단서 <small id="hInfo">정보 시간 ${hm(infoSec())}</small></h4>
         <div class="tiers">${TIERS.map((t,i)=>{const own=i+1<=ownedTier(bought),c2=tierCost(i+1,bought)/3600;
           return`<button class="tier${own?' owned':''}" data-tier="${i+1}" ${own?'disabled':''}><div><b>${t.n}</b><small>${t.r}</small></div><span>${own?'열림':ownedTier(bought)?`+${c2}시간`:`${t.h}시간`}</span></button>`}).join('')}</div>
-        ${Array.from({length:ownedTier(bought)},(_,i)=>i+1).map(t=>`<div class="hint"><small>${TIERS[t-1].n}</small><p>${esc(hintText(c,t,tomorrow))}</p></div>`).join('')}
+        ${Array.from({length:ownedTier(bought)},(_,i)=>i+1).map(t=>`<div class="hint"><small>${TIERS[t-1].n}</small><p>${esc(hintText(c,t,tomorrow))}</p>${t===3?`<p class="rng num">${rangeText(c,tomorrow)}</p>`:''}</div>`).join('')}
+        ${cmpFor(tomorrow).filter(x=>x.a===c.id||x.b===c.id).map(x=>`<div class="hint cmph"><small>변동폭 비교</small><p>${cmpText(x)}</p></div>`).join('')}
         <p class="note">${bought.length?'단서를 보고 오늘 안에 사거나 팔아 두세요. 결과는 다음 오전 4시에 나와요.':`희미한 단서는 30%, 업계 소문은 10% 확률로 엉뚱한 이야기가 섞여 있어요.`}</p>
       </div>
       <div class="box"><h4>거래 <small>현금 ${won(S.stock.cash)}</small></h4>
@@ -1144,7 +1186,7 @@ $('sDel').onclick=()=>{
 };
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&!$('sheetBg').hidden)return closeSheet();
-  if(/INPUT|TEXTAREA/.test(e.target.tagName)||!$('sheetBg').hidden||!$('recBg').hidden||!$('ddBg').hidden||!$('pmBg').hidden||!$('nmBg').hidden||e.metaKey||e.ctrlKey||e.altKey)return;
+  if(/INPUT|TEXTAREA/.test(e.target.tagName)||!$('sheetBg').hidden||!$('recBg').hidden||!$('ddBg').hidden||!$('pmBg').hidden||!$('nmBg').hidden||!$('cmpBg').hidden||e.metaKey||e.ctrlKey||e.altKey)return;
   if(view==='timer'&&/^[1-9]$/.test(e.key)){const s=S.subjects[Number(e.key)-1];if(s){e.preventDefault();toggle(s.id)}}
 });
 $('addBtn').onclick=()=>openSheet(null);
@@ -1180,6 +1222,43 @@ function renderMonth(){
   $('ttSub').textContent=monthOffset===0?'이번 달 총 공부':`${m+1}월 총 공부`;
   $('mStats').innerHTML=`<div><small>공부한 날</small><b class="num">${studied}일</b></div><div><small>하루 평균</small><b class="num">${studied?hm(total/studied):'0분'}</b></div><div><small>최고 기록${best?` (${m+1}/${bestDay})`:''}</small><b class="num">${best?hm(best):'없음'}</b></div>`;
 }
+/* ───── 변동폭 비교 (특별 코너) ───── */
+const CMP_COST=2*3600,CMP_MAX=2,CMP_SIM=1.5;
+let cmpSel=[];
+const cmpFor=day=>((S.stock.cmp||{})[day])||[];
+const coN=id=>(CO.find(c=>c.id===id)||{}).n||'';
+function cmpText(x){const A=coN(x.a),B=coN(x.b);
+  return x.res==='eq'?`${A}, ${B}: 움직임 폭이 비슷해요 (차이 ${CMP_SIM}%p 미만)`:x.res==='a'?`${jg(A)} ${B}보다 더 크게 움직여요`:`${jg(B)} ${A}보다 더 크게 움직여요`}
+function renderCmp(){
+  const tm=shiftKey(dayKey(Date.now()),1),list=cmpFor(tm),left=CMP_MAX-list.length,info=infoSec();
+  $('cmpLeft').textContent=`오늘 ${list.length}/${CMP_MAX}회`;
+  $('cmpList').innerHTML=list.length?list.map(x=>`<li>${cmpText(x)}</li>`).join(''):'';
+  $('cmpList').hidden=!list.length;
+  const b=$('cmpOpen');b.disabled=left<=0||info<CMP_COST;
+  b.textContent=left<=0?'오늘 비교를 모두 썼어요':info<CMP_COST?`정보 시간이 ${hm(CMP_COST-info)} 더 필요해요`:'정보 2시간으로 비교하기';
+}
+function renderCmpPick(){
+  $('cmpPick').innerHTML=CO.map(c=>{const i=cmpSel.indexOf(c.id);return`<button data-cp="${c.id}" aria-pressed="${i>=0}">${i>=0?`<em>${i+1}</em>`:''}${c.n}</button>`}).join('');
+  const tm=shiftKey(dayKey(Date.now()),1),dup=cmpSel.length===2&&cmpFor(tm).some(x=>(x.a===cmpSel[0]&&x.b===cmpSel[1])||(x.a===cmpSel[1]&&x.b===cmpSel[0]));
+  const g=$('cmpGo');g.disabled=cmpSel.length<2||dup||cmpFor(tm).length>=CMP_MAX||infoSec()<CMP_COST;
+  g.textContent=dup?'이미 비교한 두 종목이에요':cmpFor(tm).length>=CMP_MAX?'오늘 비교를 모두 썼어요':infoSec()<CMP_COST?'정보 시간이 부족해요':'2시간 써서 비교하기';
+}
+$('cmpOpen').onclick=()=>{cmpSel=[];$('cmpRes').hidden=true;renderCmpPick();$('cmpBg').hidden=false};
+$('cmpPick').onclick=e=>{const b=e.target.closest('[data-cp]');if(!b)return;const id=b.dataset.cp,i=cmpSel.indexOf(id);
+  if(i>=0)cmpSel.splice(i,1);else{if(cmpSel.length>=2)cmpSel.shift();cmpSel.push(id)}$('cmpRes').hidden=true;renderCmpPick()};
+$('cmpGo').onclick=()=>{
+  if(cmpSel.length<2)return;const tm=shiftKey(dayKey(Date.now()),1);
+  if(infoSec()<CMP_COST)return toast('정보 시간이 부족해요');if(cmpFor(tm).length>=CMP_MAX)return toast('오늘 비교를 모두 썼어요');
+  const[a,b]=cmpSel,pa=Math.abs(nextChange(CO.find(c=>c.id===a))),pb=Math.abs(nextChange(CO.find(c=>c.id===b)));
+  const x={a,b,res:Math.abs(pa-pb)<CMP_SIM?'eq':pa>pb?'a':'b'};
+  S.stock.cmp=S.stock.cmp||{};(S.stock.cmp[tm]=S.stock.cmp[tm]||[]).push(x);S.stock.spent+=CMP_COST;save();
+  $('cmpRes').innerHTML=`<small>결과</small><b>${cmpText(x)}</b>`;$('cmpRes').hidden=false;
+  renderCmpPick();renderCmp();renderStock();renderCo();tick();
+};
+$('cmpClose').onclick=()=>{$('cmpBg').hidden=true};
+$('cmpBg').onclick=e=>{if(e.target.id==='cmpBg')$('cmpBg').hidden=true};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('cmpBg').hidden=true});
+
 /* ───── 이름 ───── */
 const appName=n=>{n=n===undefined?S.name:n;return n?`${n}의 열품타`:'나의 열품타'};
 function renderName(){$('brandTxt').textContent=appName();document.title=appName();const m=$('appTitleMeta');if(m)m.content=appName()}
