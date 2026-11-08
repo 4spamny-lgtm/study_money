@@ -488,15 +488,20 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
   .hr{flex:none;height:26px}
   .d-grid{grid-template-columns:1fr}
 }
+.pdone h3{font-size:22px;margin-bottom:8px}
+.pdone p{font-size:15px;color:var(--soft);line-height:1.55;margin-bottom:20px}
+.pmrow small{display:block;font-size:12px;color:var(--soft);margin-top:3px;font-weight:400}
+.no-stock .stock-only{display:none!important}
+.has-stock .no-stock-only{display:none!important}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <div class="shell">
   <aside class="rail">
-    <button class="brand" id="brand" aria-label="이름 설정"><span id="brandTxt">나의 열품타</span><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>
+    <button class="brand" id="brand" aria-label="설정"><span id="brandTxt">나의 열품타</span><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>
     <button class="navbtn" data-view="timer" aria-current="page"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9.5 2.5h5"/></svg>타이머</button>
-    <button class="navbtn" data-view="stock"><svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 4 8-9"/><path d="M15 7h5v5"/></svg>주식</button>
+    <button class="navbtn stock-only" data-view="stock"><svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 4 8-9"/><path d="M15 7h5v5"/></svg>주식</button>
     <button class="navbtn" data-view="garden"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="2.5"/><path d="M12 5.5c0-2 1.2-3 2.5-3s2 1.4 1.4 2.7M12 5.5c0-2-1.2-3-2.5-3s-2 1.4-1.4 2.7M14.5 8c2 0 3 1.2 3 2.5s-1.4 2-2.7 1.4M9.5 8c-2 0-3 1.2-3 2.5s1.4 2 2.7 1.4M12 10.5V21M12 17c-2.5 0-4-1.5-4.5-3.5M12 15c2.5 0 4-1.5 4.5-3.5"/></svg>정원</button>
     <button class="navbtn" data-view="manual"><svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2 2 2 0 0 0 2 2h13"/><path d="M9 7h6"/></svg>사용법</button>
     <button class="dday" id="ddBox" aria-label="D-day 관리"></button>
@@ -603,7 +608,7 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
     <section class="view manual-view" id="view-manual" hidden>
       <div class="m-intro">
         <h1>사용법</h1>
-        <p>공부한 시간만큼 내일의 주가 정보를 살 수 있는 공부 타이머예요. 왼쪽 위 제목을 누르면 내 이름을 넣을 수 있어요.</p>
+        <p><span class="stock-only">공부한 시간만큼 내일의 주가 정보를 살 수 있는 공부 타이머예요.</span><span class="no-stock-only">과목별 공부 시간을 기록하는 공부 타이머예요.</span> 왼쪽 위 제목을 누르면 내 이름을 넣거나 주식 메뉴를 숨길 수 있어요.</p>
       </div>
       <div class="manual">
         <article class="card mcard">
@@ -618,7 +623,7 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
         <article class="card mcard">
           <h3><em>2</em>하루의 기준</h3>
           <p>하루는 <b>오전 4시</b>에 시작해서 다음 날 오전 3시 59분에 끝나요. 그래서 새벽 2시에 공부한 시간도 전날 기록에 들어가요. 오전 4시를 넘겨 공부하면 기록이 두 날로 자동으로 나뉘어요.</p>
-          <p>주가도 매일 오전 4시에 한 번 움직여요.</p>
+          <p class="stock-only">주가도 매일 오전 4시에 한 번 움직여요.</p>
         </article>
         <article class="card mcard">
           <h3><em>3</em>타임테이블 (일간)</h3>
@@ -631,12 +636,12 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
           <div class="scale"><span><i></i>3시간 미만</span><span><i class="l1"></i>3시간+</span><span><i class="l2"></i>6시간+</span><span><i class="l3"></i>9시간+</span><span><i class="l4"></i>12시간+</span></div>
           <p>날짜를 누르면 그날의 타임테이블로 넘어가요. 위쪽에는 공부한 날 수, 하루 평균, 최고 기록이 나와요.</p>
         </article>
-        <article class="card mcard">
+        <article class="card mcard stock-only">
           <h3><em>5</em>정보 시간</h3>
           <p>지금까지 공부한 시간이 모두 <b>정보 시간</b>으로 쌓여요. 단서를 살 때 쓰이고, 주식 화면의 총 자산 카드와 단서 칸에서 확인할 수 있어요.</p>
           <p class="soft">단서를 사도 타이머의 공부 기록은 줄어들지 않아요. 정보 시간만 줄어들어요.</p>
         </article>
-        <article class="card mcard">
+        <article class="card mcard stock-only">
           <h3><em>6</em>단서 3단계</h3>
           <p>종목을 고르고 <b>내일 주가 단서</b>를 사요. 다음 오전 4시에 일어날 일에 대한 정보예요. 단계는 차례로 올릴 수 있어요. 1시간 단서를 산 뒤 1시간을 더 쓰면 업계 소문이, 다시 1시간을 더 쓰면 확정 뉴스가 열려요. 높은 단계를 바로 사면 아래 단계도 함께 열려요.</p>
           <div class="trow"><b>1시간</b><div>희미한 단서<span>분위기나 목격담 정도라 추리가 필요해요. 30% 확률로 엉뚱한 단서예요.</span></div></div>
@@ -644,7 +649,7 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
           <div class="trow"><b>3시간</b><div>확정 뉴스<span>무슨 일이 일어날지 확실하고, "예상 등락폭 +9% ~ +15%"처럼 실제 등락률이 들어 있는 범위도 알려줘요.</span></div></div>
           <div class="trow"><b>2시간</b><div>변동폭 비교 (특별 코너)<span>두 종목을 고르면 내일 어느 쪽이 더 크게 움직일지 알려줘요. 오를지 내릴지는 알려주지 않고, 차이가 1.5%p보다 작으면 "비슷해요"라고 나와요. 하루 두 번까지 쓸 수 있어요.</span></div></div>
         </article>
-        <article class="card mcard">
+        <article class="card mcard stock-only">
           <h3><em>7</em>주가가 움직이는 방식</h3>
           <ul>
             <li>매일 오전 4시, 종목마다 조용한 날(절반 정도) 또는 호재나 악재가 생겨요.</li>
@@ -653,12 +658,12 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
           </ul>
           <p class="soft">결과는 다음 날 주식 화면 맨 위 <b>오늘의 뉴스</b>에서 확인할 수 있어요. 많이 움직인 종목부터 한 줄씩 보여 주고, 누르면 그 종목으로 바로 이동해요.</p>
         </article>
-        <article class="card mcard">
+        <article class="card mcard stock-only">
           <h3><em>8</em>거래하기</h3>
           <p>시작 자금은 100만 원이에요. 수량을 정하고 <b>매수</b>나 <b>매도</b>를 누르면 오늘 가격으로 바로 거래돼요. 수수료는 없고, 오전 4시 전까지 몇 번이든 사고팔 수 있어요.</p>
           <p class="soft">종목은 A바이오부터 M조선까지 13개이고, 주가는 3천 원대부터 100만 원대까지 다양해요. 100만 원이 넘는 종목은 수익을 내서 자산이 불어나야 살 수 있어요. 같은 업종이라도 사건은 종목마다 따로 일어나요. 목록 위의 버튼으로 보유 종목, 단서를 산 종목만 모아 보거나 등락률순으로 정렬할 수 있어요.</p>
         </article>
-        <article class="card mcard">
+        <article class="card mcard stock-only">
           <h3><em>9</em>이렇게 해 보세요</h3>
           <ul>
             <li>1시간 단서를 여러 종목에 뿌려 보고, 수상한 종목에만 3시간 확정 뉴스를 사요.</li>
@@ -680,17 +685,18 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
             <li><b>멈추는 걸 잊었을 때</b>: 3시간 넘게 측정 중이면 시계 아래에 <b>멈추는 걸 잊었다면 고치기</b> 버튼이 떠요. 3시간이 안 됐어도 타임테이블의 측정 중인 칸을 눌러 고칠 수 있어요. 실제로 멈춘 시각을 넣으면 그 시각까지만 기록돼요.</li>
             <li><b>이미 저장된 기록</b>: 타임테이블의 색 칸을 누르거나 기록 목록에서 골라 과목, 시간을 바꾸거나 지울 수 있어요.</li>
           </ul>
-          <p class="soft">새 기록은 그날 마지막 기록 바로 뒤 시간으로 채워져 있어요. 다른 기록과 시간이 겹치면 저장 전에 알려 주고, 그래도 저장하면 겹치는 부분만 새 기록으로 바뀌어요. 고친 시간만큼 정보 시간도 함께 바뀌어요.</p>
+          <p class="soft">새 기록은 그날 마지막 기록 바로 뒤 시간으로 채워져 있어요. 다른 기록과 시간이 겹치면 저장 전에 알려 주고, 그래도 저장하면 겹치는 부분만 새 기록으로 바뀌어요. <span class="stock-only">고친 시간만큼 정보 시간도 함께 바뀌어요.</span></p>
         </article>
         <article class="card mcard">
           <h3><em>12</em>뽀모도로</h3>
           <p>시계 카드 위쪽에서 <b>뽀모도로</b>를 고르고 과목 ▶를 누르면 집중 시간이 거꾸로 흘러가요. 끝나면 소리와 함께 기록이 자동으로 저장되고 휴식으로 넘어가요.</p>
           <ul>
             <li>기본은 25분 집중, 5분 휴식이고, 4번마다 15분 긴 휴식이에요. ⚙ 버튼에서 바꿀 수 있어요(50분·10분 프리셋도 있어요).</li>
-            <li>집중 시간만 공부 기록과 정보 시간에 들어가요. 휴식 시간은 기록되지 않아요.</li>
+            <li>집중 시간만 공부 기록<span class="stock-only">과 정보 시간</span>에 들어가요. 휴식 시간은 기록되지 않아요.</li>
             <li>중간에 멈추면 거기까지만 기록돼요. 휴식은 건너뛸 수 있어요.</li>
           </ul>
-          <p class="soft">집중하는 동안에는 화면이 꺼지지 않게 해 두었어요. 아이패드를 잠그거나 다른 앱으로 가면 알림 소리는 늦게 날 수 있지만, 기록은 정해진 집중 시간까지만 정확히 저장돼요.</p>
+          <p class="soft">집중이나 휴식이 끝나면 소리와 함께 알림 창이 떠요. 처음 뽀모도로를 켤 때 알림을 허용하면 다른 탭이나 앱을 쓰고 있어도 컴퓨터 알림으로 알려 줘요. ⚙ 설정에서도 켤 수 있어요.</p>
+          <p class="soft">집중하는 동안에는 화면이 꺼지지 않게 해 두었어요. 아이패드·아이폰에서 화면을 잠그거나 다른 앱으로 가면 브라우저가 잠시 멈춰서 알림이 늦게 올 수 있지만, 기록은 정해진 집중 시간까지만 정확히 저장돼요.</p>
         </article>
         <article class="card mcard">
           <h3><em>13</em>정원</h3>
@@ -719,7 +725,7 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
     <h3 id="sheetTitle">과목 추가</h3>
     <input id="sName" maxlength="16" placeholder="과목 이름" aria-label="과목 이름">
     <div class="palette" id="palette" role="radiogroup" aria-label="과목 색"></div>
-    <p class="note" id="sDelNote" hidden style="margin:-8px 2px 16px">과목을 지워도 지난 공부 기록은 "삭제된 과목"으로 남아서 공부시간과 정보 시간에 그대로 포함돼요.</p>
+    <p class="note" id="sDelNote" hidden style="margin:-8px 2px 16px">과목을 지워도 지난 공부 기록은 "삭제된 과목"으로 남아서 공부시간<span class="stock-only">과 정보 시간</span>에 그대로 포함돼요.</p>
     <div class="actions">
       <button class="btn-del" id="sDel" hidden>삭제</button>
       <button class="btn-sub" id="sCancel">취소</button>
@@ -757,9 +763,10 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
 
 <div class="modal-bg" id="nmBg" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nmTitle" style="max-width:400px">
-    <h3 id="nmTitle">이름 설정</h3>
+    <h3 id="nmTitle">설정</h3>
     <input id="nmIn" maxlength="10" placeholder="이름 (예: 지민)" aria-label="이름">
-    <p class="note" id="nmPrev" style="margin:10px 2px 18px"></p>
+    <p class="note" id="nmPrev" style="margin:10px 2px 8px"></p>
+    <div class="pmrow" style="margin-bottom:18px"><span>주식 메뉴 보이기<small>꺼도 공부 기록과 주식 자산은 그대로 남아 있어요</small></span><button class="sw" id="nmStock" aria-pressed="true" aria-label="주식 메뉴 보이기"><i></i></button></div>
     <div class="actions"><button class="btn-sub" id="nmCancel">취소</button><button class="btn-main" id="nmSave">저장</button></div>
   </div>
 </div>
@@ -770,6 +777,14 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
     <div class="presets"><button data-pre="25,5,15">25분 집중 · 5분 휴식</button><button data-pre="50,10,30">50분 집중 · 10분 휴식</button></div>
     <div id="pmRows"></div>
     <div class="actions" style="margin-top:18px"><button class="btn-main" id="pmDone">완료</button></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="pdBg" hidden>
+  <div class="modal pdone" role="alertdialog" aria-modal="true" aria-labelledby="pdTitle" aria-describedby="pdMsg" style="max-width:400px">
+    <h3 id="pdTitle"></h3>
+    <p id="pdMsg"></p>
+    <div class="actions" id="pdActs"></div>
   </div>
 </div>
 
@@ -971,7 +986,7 @@ const ICON_PLAY='<svg viewBox="0 0 24 24"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10
 const ICON_PAUSE='<svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>';
 function toggle(sid){
   audioUnlock();
-  if(S.pomo.on){const now=Date.now();
+  if(S.pomo.on){askNotify();const now=Date.now();
     if(S.running&&S.running.sid===sid){endFocus(now,false);toast('집중을 멈췄어요. 여기까지 기록했어요')}else startFocus(sid,now);
     viewOffset=0;renderSubjects();tick();save();return}
   const now=Date.now(),same=S.running&&S.running.sid===sid;
@@ -1019,7 +1034,7 @@ function renderTable(){
 function tick(){
   pomoTick(Date.now());
   const now=Date.now(),today=dayKey(now),d=new Date(now-START*H),total=daySec(today);
-  if(lastDay&&lastDay!==today){toast('오전 4시, 새 하루가 시작되고 주가가 움직였어요');if(view==='stock'){renderStock();renderCo()}}
+  if(lastDay&&lastDay!==today){toast(S.hideStock?'오전 4시, 새 하루가 시작됐어요':'오전 4시, 새 하루가 시작되고 주가가 움직였어요');if(view==='stock'){renderStock();renderCo()}}
   lastDay=today;
   $('heroDate').textContent=`${d.getMonth()+1}월 ${d.getDate()}일 ${DAYS[d.getDay()]}요일`;
   $('heroTime').textContent=hms(total);
@@ -1186,7 +1201,7 @@ $('sDel').onclick=()=>{
 };
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&!$('sheetBg').hidden)return closeSheet();
-  if(/INPUT|TEXTAREA/.test(e.target.tagName)||!$('sheetBg').hidden||!$('recBg').hidden||!$('ddBg').hidden||!$('pmBg').hidden||!$('nmBg').hidden||!$('cmpBg').hidden||e.metaKey||e.ctrlKey||e.altKey)return;
+  if(/INPUT|TEXTAREA/.test(e.target.tagName)||!$('sheetBg').hidden||!$('recBg').hidden||!$('ddBg').hidden||!$('pmBg').hidden||!$('nmBg').hidden||!$('cmpBg').hidden||!$('pdBg').hidden||e.metaKey||e.ctrlKey||e.altKey)return;
   if(view==='timer'&&/^[1-9]$/.test(e.key)){const s=S.subjects[Number(e.key)-1];if(s){e.preventDefault();toggle(s.id)}}
 });
 $('addBtn').onclick=()=>openSheet(null);
@@ -1262,9 +1277,18 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')$('cmpBg').hidden=tr
 /* ───── 이름 ───── */
 const appName=n=>{n=n===undefined?S.name:n;return n?`${n}의 열품타`:'나의 열품타'};
 function renderName(){$('brandTxt').textContent=appName();document.title=appName();const m=$('appTitleMeta');if(m)m.content=appName()}
-$('brand').onclick=()=>{$('nmIn').value=S.name||'';$('nmPrev').textContent=`왼쪽 위에 "${appName()}"로 보여요`;$('nmBg').hidden=false;setTimeout(()=>$('nmIn').focus(),50)};
+let nmStock=true;
+$('nmStock').onclick=()=>{nmStock=!nmStock;$('nmStock').setAttribute('aria-pressed',nmStock)};
+$('brand').onclick=()=>{nmStock=!S.hideStock;$('nmStock').setAttribute('aria-pressed',nmStock);$('nmIn').value=S.name||'';$('nmPrev').textContent=`왼쪽 위에 "${appName()}"로 보여요`;$('nmBg').hidden=false;setTimeout(()=>$('nmIn').focus(),50)};
 $('nmIn').oninput=()=>{$('nmPrev').textContent=`왼쪽 위에 "${appName($('nmIn').value.trim())}"로 보여요`};
-function saveName(){S.name=$('nmIn').value.trim();save();renderName();$('nmBg').hidden=true;toast(`${appName()}에 오신 걸 환영해요`)}
+function applyStock(){
+  const off=!!S.hideStock;document.body.classList.toggle('no-stock',off);document.body.classList.toggle('has-stock',!off);
+  if(off&&view==='stock')setView('timer');
+  let i=0;document.querySelectorAll('.mcard').forEach(c=>{if(getComputedStyle(c).display!=='none'){const em=c.querySelector('h3 em');if(em)em.textContent=++i}});
+}
+function saveName(){const nm=$('nmIn').value.trim(),nameChanged=nm!==(S.name||''),stockChanged=S.hideStock!==!nmStock;
+  S.name=nm;S.hideStock=!nmStock;save();renderName();applyStock();$('nmBg').hidden=true;
+  toast(nameChanged?`${appName()}에 오신 걸 환영해요`:stockChanged?(S.hideStock?'주식 메뉴를 숨겼어요':'주식 메뉴를 다시 보여 줘요'):'설정을 저장했어요')}
 $('nmSave').onclick=saveName;
 $('nmIn').onkeydown=e=>{if(e.key==='Enter')saveName()};
 $('nmCancel').onclick=()=>{$('nmBg').hidden=true};
@@ -1281,13 +1305,37 @@ let actx=null;
 function audioUnlock(){try{actx=actx||new(window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume()}catch(e){}}
 function beep(n=3){try{if(!actx)return;let t0=actx.currentTime;for(let i=0;i<n;i++){const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=i===n-1?1046:880;o.connect(g);g.connect(actx.destination);g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(.25,t0+.02);g.gain.exponentialRampToValueAtTime(.001,t0+.35);o.start(t0);o.stop(t0+.4);t0+=.45}}catch(e){}}
 let wl=null;
+/* 끝났을 때 알리기: 화면 팝업 + (다른 탭·앱에 있으면) 브라우저 알림 */
+const canNotify=()=>'Notification' in window;
+function askNotify(){
+  if(!canNotify()||Notification.permission!=='default')return;
+  try{const r=Notification.requestPermission(()=>{if(!$('pmBg').hidden)renderPm()});
+    if(r&&r.then)r.then(()=>{if(!$('pmBg').hidden)renderPm()}).catch(()=>{})}catch(e){}
+}
+function notify(title,body){
+  if(document.visibilityState==='visible'&&document.hasFocus())return;
+  if(!canNotify()||Notification.permission!=='granted')return;
+  try{const n=new Notification(title,{body,tag:'pomo',renotify:true,requireInteraction:true});
+    n.onclick=()=>{window.focus();n.close()}}catch(e){}
+}
+function pomoAlert(title,msg,acts){
+  $('pdTitle').textContent=title;$('pdMsg').textContent=msg;
+  $('pdActs').innerHTML=acts.map(([k,t],i)=>`<button class="${i===acts.length-1?'btn-main':'btn-sub'}" data-pd="${k}">${esc(t)}</button>`).join('');
+  $('pdBg').hidden=false;notify(title,msg);
+}
+const closePd=()=>{$('pdBg').hidden=true};
+/* 백그라운드에서도 끝나는 순간에 맞춰 한 번 더 확인 */
+let alarmT=null;
+function armAlarm(){clearTimeout(alarmT);const p=S.pomo;
+  if(!p||!p.on||!(p.phase==='focus'||p.phase==='short'||p.phase==='long'))return;
+  alarmT=setTimeout(tick,Math.max(0,p.endAt-Date.now())+30)}
 async function wake(on){try{if(on&&!wl&&navigator.wakeLock){wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>{wl=null})}else if(!on&&wl){await wl.release();wl=null}}catch(e){}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){tick();if(S.pomo.on&&S.pomo.phase!=='idle'&&S.pomo.phase!=='ready')wake(true)}});
 
 function startFocus(sid,at){
   const p=P();
   if(S.running){addSession(S.running.sid,S.running.start,at);S.running=null}
-  S.running={sid,start:at};p.phase='focus';p.phaseStart=at;p.endAt=at+plen('focus');p.last=sid;wake(true);
+  S.running={sid,start:at};p.phase='focus';p.phaseStart=at;p.endAt=at+plen('focus');p.last=sid;wake(true);armAlarm();
 }
 function endFocus(at,done){
   const p=P();
@@ -1295,7 +1343,7 @@ function endFocus(at,done){
   if(!done){p.phase='idle';wake(false);return}
   p.count++;const k=dayKey(at-1);p.done[k]=(p.done[k]||0)+1;
   const ph=p.count%p.set.every===0?'long':'short';
-  p.phase=ph;p.phaseStart=at;p.endAt=at+plen(ph);
+  p.phase=ph;p.phaseStart=at;p.endAt=at+plen(ph);armAlarm();
 }
 function pomoTick(now){
   const p=P();if(!p.on)return;
@@ -1303,13 +1351,15 @@ function pomoTick(now){
   if(p.phase==='focus'){
     if(!S.running){p.phase='idle';changed=true}
     else if(now>=p.endAt){endFocus(p.endAt,true);changed=true;beep(3);
-      toast(p.phase==='long'?`집중 ${p.set.focus}분 완료! 긴 휴식 ${p.set.long}분이에요`:`집중 ${p.set.focus}분 완료! ${p.set.short}분 쉬어요`)}
+      const lng=p.phase==='long';
+      pomoAlert(`집중 ${p.set.focus}분 끝!`,`${lng?'긴 휴식':'휴식'} ${lng?p.set.long:p.set.short}분이 시작됐어요. 공부 기록은 자동으로 저장했어요.`,[['skip','휴식 건너뛰기'],['ok','확인']])}
   }else if(p.phase==='short'||p.phase==='long'){
     if(S.running){p.phase='focus';p.phaseStart=S.running.start;p.endAt=S.running.start+plen('focus');changed=true}
     else if(now>=p.endAt){changed=true;
       const sub=S.subjects.find(x=>x.id===p.last);
-      if(p.set.auto&&sub&&now-p.endAt<60e3){startFocus(p.last,p.endAt);beep(2);toast(`휴식 끝! ${sub.name} 집중을 다시 시작했어요`)}
-      else{p.phase='ready';wake(false);if(now-p.endAt<60e3){beep(2);toast('휴식 끝! 다음 집중을 시작해 볼까요')}}
+      if(p.set.auto&&sub&&now-p.endAt<60e3){startFocus(p.last,p.endAt);beep(2);pomoAlert('휴식 끝!',`${sub.name} 집중 ${p.set.focus}분을 다시 시작했어요.`,[['ok','확인']])}
+      else{p.phase='ready';wake(false);if(now-p.endAt<60e3)beep(2);
+        pomoAlert('휴식 끝!','다음 집중을 시작해 볼까요?',sub?[['ok','닫기'],['go',`${sub.name} 집중 시작`]]:[['ok','확인']])}
     }
   }else if(S.running){p.phase='focus';p.phaseStart=S.running.start;p.endAt=Math.max(now+60e3,S.running.start+plen('focus'));p.last=S.running.sid;changed=true}
   if(changed){save();renderSubjects();if(view==='timer'&&ttMode==='day')renderTable()}
@@ -1339,30 +1389,41 @@ function renderPomoHero(now,total){
     :last?`<button class="btn-main pgo" data-pa="go">${esc(last.name)} 집중 시작</button>`:'<span class="psub">과목 옆 ▶를 누르면 집중이 시작돼요</span>';
   if($('pBtns').dataset.k!==ph+(last?last.id:'')){$('pBtns').innerHTML=btns;$('pBtns').dataset.k=ph+(last?last.id:'')}
   document.title=run||brk?`${mmss(left)} ${run?'집중':'휴식'} · ${appName()}`:appName();
+  if(!$('pdBg').hidden&&Math.floor(now/1000)%2)document.title='⏰ '+$('pdTitle').textContent;
 }
 $('pBtns').onclick=e=>{const b=e.target.closest('[data-pa]');if(!b)return;audioUnlock();const p=P(),now=Date.now();
   if(b.dataset.pa==='stop'){endFocus(now,false);toast('집중을 멈췄어요. 여기까지 기록했어요')}
-  if(b.dataset.pa==='skip'){p.phase='ready';wake(false)}
-  if(b.dataset.pa==='go'&&p.last){startFocus(p.last,now);viewOffset=0}
+  if(b.dataset.pa==='skip'){p.phase='ready';wake(false);armAlarm()}
+  if(b.dataset.pa==='go'&&p.last){askNotify();startFocus(p.last,now);viewOffset=0}
   $('pBtns').dataset.k='';save();renderSubjects();tick()};
 document.querySelectorAll('[data-hm]').forEach(b=>b.onclick=()=>{
   const p=P(),on=b.dataset.hm==='pomo';if(on===p.on)return;audioUnlock();
   p.on=on;$('pBtns').dataset.k='';
-  if(on){p.phase='idle';if(S.running){p.phase='focus';p.phaseStart=S.running.start;p.endAt=Math.max(Date.now()+60e3,S.running.start+plen('focus'));p.last=S.running.sid;wake(true)}
+  if(on){askNotify();p.phase='idle';if(S.running){p.phase='focus';p.phaseStart=S.running.start;p.endAt=Math.max(Date.now()+60e3,S.running.start+plen('focus'));p.last=S.running.sid;wake(true)}armAlarm();
     toast(S.running?'뽀모도로로 바꿨어요. 지금 측정 중인 공부가 집중 시간으로 이어져요':`과목 ▶를 누르면 ${p.set.focus}분 집중이 시작돼요`)}
-  else{p.phase='idle';$('hero').classList.remove('brk');wake(false)}
+  else{p.phase='idle';$('hero').classList.remove('brk');wake(false);armAlarm()}
   save();tick()});
+$('pdActs').onclick=e=>{const b=e.target.closest('[data-pd]');if(!b)return;audioUnlock();const p=P(),now=Date.now();
+  if(b.dataset.pd==='skip'&&(p.phase==='short'||p.phase==='long')){p.phase='ready';wake(false);armAlarm()}
+  if(b.dataset.pd==='go'&&p.last&&!S.running){startFocus(p.last,now);viewOffset=0}
+  closePd();$('pBtns').dataset.k='';save();renderSubjects();tick()};
+$('pdBg').onclick=e=>{if(e.target.id==='pdBg')closePd()};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('pdBg').hidden)closePd()});
 /* 설정 */
 const PROWS=[['focus','집중',5,90,5,'분'],['short','짧은 휴식',1,30,1,'분'],['long','긴 휴식',5,60,5,'분'],['every','긴 휴식 간격',2,8,1,'회마다']];
 function renderPm(){const s=P().set;
   $('pmRows').innerHTML=PROWS.map(([k,n,,,,u])=>`<div class="pmrow"><span>${n}</span><div class="stp"><button data-pk="${k}" data-d="-1" aria-label="${n} 줄이기">−</button><b class="num">${s[k]}${u}</b><button data-pk="${k}" data-d="1" aria-label="${n} 늘리기">+</button></div></div>`).join('')
-  +`<div class="pmrow"><span>휴식이 끝나면 다음 집중 자동 시작</span><button class="sw" id="pmAuto" aria-pressed="${s.auto}"><i></i></button></div>`;
+  +`<div class="pmrow"><span>휴식이 끝나면 다음 집중 자동 시작</span><button class="sw" id="pmAuto" aria-pressed="${s.auto}"><i></i></button></div>`
+  +(()=>{const st=canNotify()?Notification.permission:'none';
+    const t=st==='granted'?'켜져 있어요':st==='denied'?'브라우저 설정에서 이 사이트의 알림을 허용해 주세요':st==='none'?'이 브라우저는 알림을 지원하지 않아요':'끝날 때 다른 탭·앱에 있어도 알려 줘요';
+    return`<div class="pmrow"><span>다른 앱을 쓸 때 알림<small>${t}</small></span>${st==='default'?'<button class="ghost" id="pmNotify">알림 허용</button>':''}</div>`})();
   document.querySelectorAll('[data-pre]').forEach(b=>{const[f,sh]=b.dataset.pre.split(',').map(Number);b.setAttribute('aria-pressed',s.focus===f&&s.short===sh)});
 }
-function pmApply(){const p=P();if(p.phase==='focus'||p.phase==='short'||p.phase==='long')p.endAt=p.phaseStart+plen(p.phase);save();tick()}
+function pmApply(){const p=P();if(p.phase==='focus'||p.phase==='short'||p.phase==='long')p.endAt=p.phaseStart+plen(p.phase);armAlarm();save();tick()}
 $('pmRows').onclick=e=>{const s=P().set,b=e.target.closest('[data-pk]');
   if(b){const[k,,mn,mx,st]=PROWS.find(r=>r[0]===b.dataset.pk);s[k]=Math.min(mx,Math.max(mn,s[k]+st*Number(b.dataset.d)));renderPm();pmApply()}
-  if(e.target.closest('#pmAuto')){s.auto=!s.auto;renderPm();save()}};
+  if(e.target.closest('#pmAuto')){s.auto=!s.auto;renderPm();save()}
+  if(e.target.closest('#pmNotify'))askNotify()};
 document.querySelectorAll('[data-pre]').forEach(b=>b.onclick=()=>{const[f,sh,l]=b.dataset.pre.split(',').map(Number);Object.assign(P().set,{focus:f,short:sh,long:l});renderPm();pmApply()});
 $('pmGear').onclick=()=>{renderPm();$('pmBg').hidden=false};
 $('pmDone').onclick=()=>{$('pmBg').hidden=true};
@@ -1491,7 +1552,7 @@ $('bkIn').onclick=()=>$('bkFile').click();
 $('bkFile').onchange=async e=>{
   const f=e.target.files[0];e.target.value='';if(!f)return;
   try{const o=JSON.parse(await f.text());if(!Array.isArray(o.sessions)||!o.stock)throw 0;
-    S={subjects:o.subjects||[],sessions:o.sessions,running:o.running||null,stock:o.stock,ddays:o.ddays||[],pomo:o.pomo||null,garden:o.garden||null,name:o.name||''};fixPomo();renderName();ensureGarden();
+    S={subjects:o.subjects||[],sessions:o.sessions,running:o.running||null,stock:o.stock,ddays:o.ddays||[],pomo:o.pomo||null,garden:o.garden||null,name:o.name||'',hideStock:!!o.hideStock};fixPomo();renderName();applyStock();ensureGarden();
     histCache={key:null};await st.set(KEY,JSON.stringify(S));renderSubjects();renderDday();tick();toast('백업을 불러왔어요')}
   catch(err){toast('올바른 백업 파일이 아니에요')}
 };
@@ -1703,7 +1764,7 @@ function gardenTick(){
 (async()=>{
   let raw=await st.get(KEY);
   if(!raw)raw=await st.get('miljul-state-v1');
-  if(raw){try{const o=JSON.parse(raw);S.subjects=o.subjects||S.subjects;S.sessions=o.sessions||[];S.running=o.running||null;S.stock=o.stock||null;S.ddays=o.ddays||[];S.pomo=o.pomo||null;S.garden=o.garden||null;S.name=o.name||''}catch(e){}}
+  if(raw){try{const o=JSON.parse(raw);S.subjects=o.subjects||S.subjects;S.sessions=o.sessions||[];S.running=o.running||null;S.stock=o.stock||null;S.ddays=o.ddays||[];S.pomo=o.pomo||null;S.garden=o.garden||null;S.name=o.name||'';S.hideStock=!!o.hideStock}catch(e){}}
   fixPomo();
   // 예전 색(비비드·무채색)은 저채도 팔레트로 바꿔 줌
   S.subjects.forEach((s,i)=>{if(!COLORS.includes(s.color))s.color=COLORS[i%COLORS.length]});
@@ -1723,9 +1784,9 @@ function gardenTick(){
     S.stock.seed=SEED_CASH;S.stock.v=3;save();
   }
   openCo=CO[0].id;
-  renderName();
+  renderName();applyStock();
   ensureGarden();snapshotMonths();
-  renderSubjects();tick();setInterval(tick,1000);
+  renderSubjects();tick();armAlarm();setInterval(tick,1000);
 })();
 </script>
 </body>
