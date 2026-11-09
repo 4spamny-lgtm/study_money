@@ -567,7 +567,17 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
             <div><small>주식</small><b class="num" id="aStock"></b></div>
             <div><small>다음 변동 (오전 4시)</small><b class="num" id="aClock"></b></div>
             <div><small>정보 시간</small><b class="num" id="aInfo"></b></div>
+            <div><small>KOFR형 안전자산</small><b class="num" id="aKofr"></b></div>
+            <div><small>공부 보상 (하루 6시간 한도)</small><b class="num" id="aReward"></b></div>
           </div>
+        </div>
+        <div class="card asset">
+          <div class="sec-head" style="padding:0 0 8px"><h2>KOFR형 안전자산</h2><small>게임 전용 · 연 10%</small></div>
+          <p class="note" style="margin:0 0 12px">매일 오전 4시 복리 이자가 붙어요. 주가처럼 하락하지 않으며 언제든 현금으로 바꿀 수 있어요.</p>
+          <div class="kv"><span>보유액</span><b id="kofrHeld">0원</b></div>
+          <div class="kv"><span>예상 하루 이자</span><b id="kofrDaily">0원</b></div>
+          <div class="qty"><input id="kofrAmount" class="num" inputmode="numeric" type="number" min="1" step="1" placeholder="금액 (원)" aria-label="KOFR 거래 금액"><button class="max" id="kofrMaxBuy">현금 전액</button><button class="max" id="kofrMaxSell">보유 전액</button></div>
+          <div class="trade"><button class="buy" id="kofrBuy">매수</button><button class="sell" id="kofrSell">매도</button></div>
         </div>
         <div class="card cmp">
           <div class="sec-head"><h2>변동폭 비교 <span class="tag">특별 코너</span></h2><small id="cmpLeft"></small></div>
@@ -653,8 +663,8 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
           <h3><em>7</em>주가가 움직이는 방식</h3>
           <ul>
             <li>매일 오전 4시, 종목마다 조용한 날(절반 정도) 또는 호재나 악재가 생겨요.</li>
-            <li>가끔 시장 전체가 출렁여서 모든 종목이 함께 2~5% 움직여요. 이건 단서로 알 수 없어요.</li>
-            <li>주가가 처음 가격에서 너무 멀어지면 조금씩 되돌아오려는 힘이 생겨요.</li>
+            <li>가끔 시장 전체가 출렁여서 모든 종목이 함께 약 1.2~3% 움직여요. 이건 단서로 알 수 없어요.</li>
+            <li>주가가 처음 가격에서 너무 멀어지면 조금씩 되돌아오려는 힘이 생겨요. 개별 호재·악재의 가격 영향은 이전보다 35% 축소했고, 계산상의 하루 등락폭은 ±18%로 제한해요(호가 반올림으로 실제 표시 등락률은 조금 차이 날 수 있어요).</li>
           </ul>
           <p class="soft">결과는 다음 날 주식 화면 맨 위 <b>오늘의 뉴스</b>에서 확인할 수 있어요. 많이 움직인 종목부터 한 줄씩 보여 주고, 누르면 그 종목으로 바로 이동해요.</p>
         </article>
@@ -664,7 +674,13 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
           <p class="soft">종목은 A바이오부터 M조선까지 13개이고, 주가는 3천 원대부터 100만 원대까지 다양해요. 100만 원이 넘는 종목은 수익을 내서 자산이 불어나야 살 수 있어요. 같은 업종이라도 사건은 종목마다 따로 일어나요. 목록 위의 버튼으로 보유 종목, 단서를 산 종목만 모아 보거나 등락률순으로 정렬할 수 있어요.</p>
         </article>
         <article class="card mcard stock-only">
-          <h3><em>9</em>이렇게 해 보세요</h3>
+          <h3><em>9</em>공부 보상과 KOFR</h3>
+          <p>공부를 <b>완료한 1시간마다 3,000원</b>을 받아요. 하루 최대 6시간, <b>18,000원</b>까지 지급하며 오전 4시에 전날 공부를 정산해요. 부분 시간은 다음 한 시간이 완료되기 전까지 지급되지 않아요.</p>
+          <p>KOFR형 안전자산은 게임 전용 연 <b>10%</b> 복리 상품이에요. 현금으로 매수·매도할 수 있고, 오전 4시에 하루 이자가 쌓여요. 실제 금융상품의 수익률이나 원금보장을 나타내지는 않아요.</p>
+          <p class="soft">새 기능을 처음 적용하기 전 날짜의 공부시간과 이자는 소급 정산하지 않아요. 이미 정산한 날짜의 공부 기록을 수정해도 지급된 보상은 다시 계산하지 않아요.</p>
+        </article>
+        <article class="card mcard stock-only">
+          <h3><em>10</em>이렇게 해 보세요</h3>
           <ul>
             <li>1시간 단서를 여러 종목에 뿌려 보고, 수상한 종목에만 3시간 확정 뉴스를 사요.</li>
             <li>희미한 단서와 업계 소문이 같은 방향을 가리키면 꽤 믿을 만해요.</li>
@@ -812,6 +828,7 @@ const cv=k=>k&&k[0]==='#'?k:`var(--${k||'g3'})`;
 const fgv=k=>k&&k[0]==='#'?'#fff':`var(--${k||'g3'}-fg)`;
 const DAYS=['일','월','화','수','목','금','토'];
 const START=4,H=3600e3,KEY='miljul-stock-v1',SEED_CASH=1000000;
+const STUDY_PAY=3000, STUDY_CAP_HOURS=6, KOFR_RATE=.10, KOFR_DAILY=Math.pow(1+KOFR_RATE,1/365)-1;
 const tickSz=p=>p<2000?1:p<5000?5:p<20000?10:p<50000?50:p<200000?100:p<500000?500:1000;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -906,8 +923,8 @@ const TIERS=[{h:1,n:'희미한 단서',r:'추리가 필요해요'},{h:2,n:'업�
 
 function rng(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19}
   return()=>{h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);h^=h>>>16;return(h>>>0)/4294967296}}
-function eventFor(c,day){const r=rng(day+'|'+c.id+'|'+S.stock.salt);const ev=r()<.55?CALM:c.ev[Math.floor(r()*c.ev.length)];return{ev,base:ev.lo+r()*(ev.hi-ev.lo)}}
-function market(day){const r=rng(day+'|market|'+S.stock.salt);if(r()>=.15)return 0;return(r()<.5?-1:1)*(2+r()*3)}
+function eventFor(c,day){const r=rng(day+'|'+c.id+'|'+S.stock.salt);const ev=r()<.55?CALM:c.ev[Math.floor(r()*c.ev.length)];return{ev,base:(ev.lo+r()*(ev.hi-ev.lo))*.65}}
+function market(day){const r=rng(day+'|market|'+S.stock.salt);if(r()>=.15)return 0;return(r()<.5?-1:1)*(2+r()*3)*.6}
 const evText=(c,ev,t)=>typeof ev[t]==='function'?ev[t](c.n):ev[t];
 
 /* 저장소 */
@@ -954,6 +971,40 @@ const daySec=(k,sid)=>segs(k).filter(x=>!sid||x.sid===sid).reduce((a,x)=>a+x.e-x
 function allSec(){let t=S.sessions.reduce((a,x)=>a+x.e-x.s,0);if(S.running)t+=Date.now()-S.running.start;return t/1000}
 function addSession(sid,s,e){while(dayKey(s)!==dayKey(e)){const b=dayStart(dayKey(s))+24*H;S.sessions.push({sid,s,e:b});s=b}if(e-s>=1000)S.sessions.push({sid,s,e})}
 const infoSec=()=>Math.max(0,allSec()-S.stock.spent);
+// 오전 4시마다 전날 공부 보상과 KOFR 복리이자를 한 번만 정산합니다.
+// 최초 적용일 이전 공부시간에는 소급 보상을 하지 않습니다.
+function ensureEconomy(){
+  if(!S.stock)return;
+  const yesterday=shiftKey(dayKey(Date.now()),-1);
+  if(!Number.isFinite(S.stock.kofr))S.stock.kofr=0;
+  if(!S.stock.rewardThrough)S.stock.rewardThrough=yesterday;
+  if(!S.stock.kofrThrough)S.stock.kofrThrough=yesterday;
+}
+function settleEconomy(){
+  if(!S.stock)return;
+  ensureEconomy();
+  const yesterday=shiftKey(dayKey(Date.now()),-1);
+  let changed=false,earned=0,interest=0;
+  let k=S.stock.rewardThrough;
+  for(let n=0;k<yesterday&&n<36500;n++){
+    k=shiftKey(k,1);
+    // 하루 공부 기록의 완성된 시간만 보상 (최대 6시간)
+    const hours=Math.min(STUDY_CAP_HOURS,Math.floor(daySec(k)/3600));
+    earned+=hours*STUDY_PAY;
+    changed=true;
+  }
+  if(changed){S.stock.cash+=earned;S.stock.rewardThrough=k;}
+  k=S.stock.kofrThrough;
+  for(let n=0;k<yesterday&&n<36500;n++){
+    k=shiftKey(k,1);
+    const inc=S.stock.kofr*KOFR_DAILY;
+    S.stock.kofr+=inc;interest+=inc;changed=true;
+  }
+  if(k!==S.stock.kofrThrough)S.stock.kofrThrough=k;
+  if(changed)save();
+  return {earned,interest};
+}
+
 function toast(msg){document.querySelector('.toast')?.remove();const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
 
 /* 주가 */
@@ -961,17 +1012,17 @@ function history(){
   const today=dayKey(Date.now());if(histCache.key===today)return histCache.data;
   const data={};
   for(const c of CO){let p=c.base,arr=[{day:S.stock.start,price:p,pct:0}],k=S.stock.start;
-    while(k<today){k=shiftKey(k,1);const e=eventFor(c,k),pct=e.base+market(k)-Math.log(p/c.base)*6;
-      const ts=tickSz(p),np=Math.max(Math.round(c.base*.15),Math.round(p*(1+pct/100)/ts)*ts);arr.push({day:k,price:np,pct:(np/p-1)*100});p=np}
+    while(k<today){k=shiftKey(k,1);const e=eventFor(c,k),pct=e.base+market(k)-Math.log(p/c.base)*4;
+      const ts=tickSz(p),np=Math.max(Math.round(c.base*.15),Math.round(p*(1+Math.max(-18,Math.min(18,pct))/100)/ts)*ts);arr.push({day:k,price:np,pct:(np/p-1)*100});p=np}
     data[c.id]=arr}
   histCache={key:today,data};return data;
 }
 const priceOf=id=>{const a=history()[id];return a[a.length-1]};
-function portfolio(){let v=0;for(const[id,h]of Object.entries(S.stock.hold))if(h.q)v+=h.q*priceOf(id).price;return{stock:v,total:S.stock.cash+v}}
+function portfolio(){let v=0;for(const[id,h]of Object.entries(S.stock.hold))if(h.q)v+=h.q*priceOf(id).price;return{stock:v,kofr:S.stock.kofr||0,total:S.stock.cash+v+(S.stock.kofr||0)}}
 const sign=x=>x>0.0001?'up':x<-0.0001?'down':'flat';
 const pctTxt=x=>(x>0?'▲ ':x<0?'▼ ':'')+Math.abs(x).toFixed(2)+'%';
 /* 내일 실제 등락률 (주가 계산과 똑같은 식) */
-function nextChange(c){const tm=shiftKey(dayKey(Date.now()),1),p=priceOf(c.id).price,e=eventFor(c,tm),pct=e.base+market(tm)-Math.log(p/c.base)*6,ts=tickSz(p),np=Math.max(Math.round(c.base*.15),Math.round(p*(1+pct/100)/ts)*ts);return(np/p-1)*100}
+function nextChange(c){const tm=shiftKey(dayKey(Date.now()),1),p=priceOf(c.id).price,e=eventFor(c,tm),pct=e.base+market(tm)-Math.log(p/c.base)*4,ts=tickSz(p),np=Math.max(Math.round(c.base*.15),Math.round(p*(1+Math.max(-18,Math.min(18,pct))/100)/ts)*ts);return(np/p-1)*100}
 const fmtP=x=>(x>0?'+':x<0?'−':'')+Math.abs(x)+'%';
 /* 확정 뉴스에 붙는 등락폭 범위: 실제 값이 반드시 들어 있는 5~8%p 폭 */
 function rangeText(c,day){const x=nextChange(c),r=rng(day+'|'+c.id+'|range|'+S.stock.salt),w=5+Math.round(r()*3),lo=Math.floor(x-w*(.15+.7*r()));return`예상 등락폭 ${fmtP(lo)} ~ ${fmtP(lo+w)}`}
@@ -1033,6 +1084,7 @@ function renderTable(){
 }
 function tick(){
   pomoTick(Date.now());
+  settleEconomy();
   const now=Date.now(),today=dayKey(now),d=new Date(now-START*H),total=daySec(today);
   if(lastDay&&lastDay!==today){toast(S.hideStock?'오전 4시, 새 하루가 시작됐어요':'오전 4시, 새 하루가 시작되고 주가가 움직였어요');if(view==='stock'){renderStock();renderCo()}}
   lastDay=today;
@@ -1062,13 +1114,16 @@ function spark(arr,w=60,h=28){
   return`<svg class="spark" viewBox="0 0 ${w} ${h}"><polyline points="${pts}" fill="none" stroke="${a[a.length-1]>=a[0]?'var(--up)':'var(--down)'}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
 function renderStock(){
+  settleEconomy();
   renderCmp();
   const SEED=S.stock.seed||SEED_CASH,pf=portfolio(),rate=(pf.total/SEED-1)*100,today=dayKey(Date.now()),tomorrow=shiftKey(today,1);
   $('aTotal').textContent=won(pf.total);
   $('aRate').className='rt num '+sign(rate);
   $('aRate').textContent=`${pf.total-SEED>=0?'+':'−'}${Math.abs(Math.round(pf.total-SEED)).toLocaleString('ko-KR')}원 (${pctTxt(rate)})`;
   $('aCash').textContent=won(S.stock.cash);$('aStock').textContent=won(pf.stock);
+  $('aKofr').textContent=won(pf.kofr);$('aReward').textContent=`시간당 ${won(STUDY_PAY)} · 최대 ${won(STUDY_PAY*STUDY_CAP_HOURS)}`;
   $('aClock').textContent=hms((dayStart(today)+24*H-Date.now())/1000);
+  $('kofrHeld').textContent=won(pf.kofr);$('kofrDaily').textContent=won(pf.kofr*KOFR_DAILY);
   $('newsDate').textContent=`${md(today)} 오전 4시`;
   const mk=market(today),items=[];let calm=0;
   if(mk)items.push(`<div class="nb-item market"><span class="nb-co">시장 전체</span><b class="${sign(mk)}">${pctTxt(mk)}</b><p>${mk>0?'훈풍에 모든 종목이 함께 올랐어요':'모든 종목이 함께 흔들렸어요'}</p></div>`);
@@ -1144,6 +1199,24 @@ function trade(dir){
   else{if(qty>h.q)return toast('보유 수량보다 많이 팔 수 없어요');h.q-=qty;S.stock.cash+=qty*p;if(!h.q)h.avg=0;toast(`${c.n} ${qty}주를 팔았어요`)}
   S.stock.hold[openCo]=h;qty=1;save();renderCo();renderStock();
 }
+function kofrTrade(dir){
+  settleEconomy();
+  const input=$('kofrAmount'),amount=Math.floor(Number(input.value));
+  if(!Number.isFinite(amount)||amount<1)return toast('거래 금액을 입력하세요');
+  if(dir>0){
+    if(amount>S.stock.cash)return toast('현금이 부족해요');
+    S.stock.cash-=amount;S.stock.kofr+=amount;
+  }else{
+    if(amount>Math.round(S.stock.kofr*100)/100)return toast('KOFR 보유액보다 많아요');
+    S.stock.kofr=Math.max(0,S.stock.kofr-amount);S.stock.cash+=amount;
+  }
+  input.value='';save();renderStock();renderCo();
+  toast(`KOFR ${dir>0?'매수':'매도'} ${won(amount)}`);
+}
+$('kofrBuy').onclick=()=>kofrTrade(1);
+$('kofrSell').onclick=()=>kofrTrade(-1);
+$('kofrMaxBuy').onclick=()=>$('kofrAmount').value=Math.floor(S.stock.cash);
+$('kofrMaxSell').onclick=()=>$('kofrAmount').value=Math.floor(S.stock.kofr||0);
 /* 단서는 단계를 올리는 방식: 이미 산 단계의 시간만큼은 다시 내지 않음 (1시간 → +1시간 → +1시간) */
 const ownedTier=list=>list&&list.length?Math.max(...list):0;
 const tierCost=(t,list)=>{const o=ownedTier(list);return t<=o?0:(TIERS[t-1].h-(o?TIERS[o-1].h:0))*3600};
@@ -1552,7 +1625,7 @@ $('bkIn').onclick=()=>$('bkFile').click();
 $('bkFile').onchange=async e=>{
   const f=e.target.files[0];e.target.value='';if(!f)return;
   try{const o=JSON.parse(await f.text());if(!Array.isArray(o.sessions)||!o.stock)throw 0;
-    S={subjects:o.subjects||[],sessions:o.sessions,running:o.running||null,stock:o.stock,ddays:o.ddays||[],pomo:o.pomo||null,garden:o.garden||null,name:o.name||'',hideStock:!!o.hideStock};fixPomo();renderName();applyStock();ensureGarden();
+    S={subjects:o.subjects||[],sessions:o.sessions,running:o.running||null,stock:o.stock,ddays:o.ddays||[],pomo:o.pomo||null,garden:o.garden||null,name:o.name||'',hideStock:!!o.hideStock};fixPomo();ensureEconomy();settleEconomy();renderName();applyStock();ensureGarden();
     histCache={key:null};await st.set(KEY,JSON.stringify(S));renderSubjects();renderDday();tick();toast('백업을 불러왔어요')}
   catch(err){toast('올바른 백업 파일이 아니에요')}
 };
@@ -1783,6 +1856,7 @@ function gardenTick(){
       setTimeout(()=>toast('시작 자금이 100만 원으로 바뀌어, 수익률은 그대로 두고 자산을 1/10로 맞췄어요'),600)}
     S.stock.seed=SEED_CASH;S.stock.v=3;save();
   }
+  ensureEconomy();settleEconomy();
   openCo=CO[0].id;
   renderName();applyStock();
   ensureGarden();snapshotMonths();
