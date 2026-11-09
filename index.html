@@ -571,14 +571,6 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
             <div><small>공부 보상 (하루 6시간 한도)</small><b class="num" id="aReward"></b></div>
           </div>
         </div>
-        <div class="card asset">
-          <div class="sec-head" style="padding:0 0 8px"><h2>KOFR형 안전자산</h2><small>게임 전용 · 연 10%</small></div>
-          <p class="note" style="margin:0 0 12px">매일 오전 4시 복리 이자가 붙어요. 주가처럼 하락하지 않으며 언제든 현금으로 바꿀 수 있어요.</p>
-          <div class="kv"><span>보유액</span><b id="kofrHeld">0원</b></div>
-          <div class="kv"><span>예상 하루 이자</span><b id="kofrDaily">0원</b></div>
-          <div class="qty"><input id="kofrAmount" class="num" inputmode="numeric" type="number" min="1" step="1" placeholder="금액 (원)" aria-label="KOFR 거래 금액"><button class="max" id="kofrMaxBuy">현금 전액</button><button class="max" id="kofrMaxSell">보유 전액</button></div>
-          <div class="trade"><button class="buy" id="kofrBuy">매수</button><button class="sell" id="kofrSell">매도</button></div>
-        </div>
         <div class="card cmp">
           <div class="sec-head"><h2>변동폭 비교 <span class="tag">특별 코너</span></h2><small id="cmpLeft"></small></div>
           <p class="cmp-desc">두 종목 중 내일 어느 쪽이 <b>더 크게</b> 움직일지 알려줘요. 오를지 내릴지는 알려주지 않아요.</p>
@@ -829,6 +821,9 @@ const fgv=k=>k&&k[0]==='#'?'#fff':`var(--${k||'g3'}-fg)`;
 const DAYS=['일','월','화','수','목','금','토'];
 const START=4,H=3600e3,KEY='miljul-stock-v1',SEED_CASH=1000000;
 const STUDY_PAY=3000, STUDY_CAP_HOURS=6, KOFR_RATE=.10, KOFR_DAILY=Math.pow(1+KOFR_RATE,1/365)-1;
+// KOFR형 가상상품: 기준일 2026-01-01의 1좌당 가격을 10,000원으로 설정.
+// 기존 저장된 KOFR 보유액은 그대로 유지하며, 좌수는 현재 평가액/기준가격으로 환산해 표시합니다.
+const KOFR_BASE=10000, KOFR_ORIGIN='2026-01-01';
 const tickSz=p=>p<2000?1:p<5000?5:p<20000?10:p<50000?50:p<200000?100:p<500000?500:1000;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1018,6 +1013,11 @@ function history(){
   histCache={key:today,data};return data;
 }
 const priceOf=id=>{const a=history()[id];return a[a.length-1]};
+function kofrUnitPrice(key=dayKey(Date.now())){
+  const dayNo=k=>{const [y,m,d]=k.split('-').map(Number);return Date.UTC(y,m-1,d)/86400000};
+  return KOFR_BASE*Math.pow(1+KOFR_DAILY,Math.max(0,dayNo(key)-dayNo(KOFR_ORIGIN)));
+}
+const kofrPriceText=x=>x.toLocaleString('ko-KR',{minimumFractionDigits:2,maximumFractionDigits:2})+'원';
 function portfolio(){let v=0;for(const[id,h]of Object.entries(S.stock.hold))if(h.q)v+=h.q*priceOf(id).price;return{stock:v,kofr:S.stock.kofr||0,total:S.stock.cash+v+(S.stock.kofr||0)}}
 const sign=x=>x>0.0001?'up':x<-0.0001?'down':'flat';
 const pctTxt=x=>(x>0?'▲ ':x<0?'▼ ':'')+Math.abs(x).toFixed(2)+'%';
@@ -1123,7 +1123,6 @@ function renderStock(){
   $('aCash').textContent=won(S.stock.cash);$('aStock').textContent=won(pf.stock);
   $('aKofr').textContent=won(pf.kofr);$('aReward').textContent=`시간당 ${won(STUDY_PAY)} · 최대 ${won(STUDY_PAY*STUDY_CAP_HOURS)}`;
   $('aClock').textContent=hms((dayStart(today)+24*H-Date.now())/1000);
-  $('kofrHeld').textContent=won(pf.kofr);$('kofrDaily').textContent=won(pf.kofr*KOFR_DAILY);
   $('newsDate').textContent=`${md(today)} 오전 4시`;
   const mk=market(today),items=[];let calm=0;
   if(mk)items.push(`<div class="nb-item market"><span class="nb-co">시장 전체</span><b class="${sign(mk)}">${pctTxt(mk)}</b><p>${mk>0?'훈풍에 모든 종목이 함께 올랐어요':'모든 종목이 함께 흔들렸어요'}</p></div>`);
@@ -1138,12 +1137,18 @@ function renderStock(){
   const hs=S.stock.hints[tomorrow]||{};
   let list=CO.filter(c=>coFilter==='all'||(coFilter==='hold'&&(S.stock.hold[c.id]||{}).q)||(coFilter==='hint'&&(hs[c.id]||[]).length));
   if(coSort)list=[...list].sort((a,b)=>priceOf(b.id).pct-priceOf(a.id).pct);
-  $('coCount').textContent=list.length;
-  if(!list.length){$('cos').innerHTML=`<li class="empty">${coFilter==='hold'?'아직 보유한 종목이 없어요':'내일 단서를 산 종목이 없어요'}</li>`;return}
-  $('cos').innerHTML=list.map(c=>{const arr=history()[c.id],p=arr[arr.length-1],h=S.stock.hold[c.id],nh=(hs[c.id]||[]).length;
+  // 안전자산은 주식과 같은 목록의 맨 위에 고정합니다. (등락률 정렬 시에도 고정)
+  const showKofr=coFilter==='all'||(coFilter==='hold'&&(S.stock.kofr||0)>0);
+  $('coCount').textContent=list.length+(showKofr?1:0);
+  const kp=kofrUnitPrice(),previous=kp/(1+KOFR_DAILY),dailyPct=(kp/previous-1)*100;
+  const kofrRow=showKofr?`<li><button class="co${openCo==='kofr'?' sel':''}" data-co="kofr"><span class="logo">K</span>
+    <span class="co-name"><strong>KOFR형 안전자산</strong><small>안정형 · 연 10%${(S.stock.kofr||0)>0?` · 보유 ${won(S.stock.kofr)}`:''}</small></span>
+    <span class="co-price num"><strong>${kofrPriceText(kp)}</strong><small class="up">${pctTxt(dailyPct)}</small></span></button></li>`:'';
+  const stockRows=list.map(c=>{const arr=history()[c.id],p=arr[arr.length-1],h=S.stock.hold[c.id],nh=(hs[c.id]||[]).length;
     return`<li><button class="co${c.id===openCo?' sel':''}" data-co="${c.id}"><span class="logo">${c.n[0]}</span>
       <span class="co-name"><strong>${c.n}</strong><small>${c.sec}${h&&h.q?` · ${h.q}주`:''}${nh?` · <em>단서 ${nh}</em>`:''}</small></span>
       ${spark(arr)}<span class="co-price num"><strong>${p.price.toLocaleString('ko-KR')}</strong><small class="${sign(p.pct)}">${pctTxt(p.pct)}</small></span></button></li>`}).join('');
+  $('cos').innerHTML=kofrRow+stockRows||`<li class="empty">${coFilter==='hold'?'아직 보유한 종목이 없어요':'내일 단서를 산 종목이 없어요'}</li>`;
 }
 function chart(arr){
   const a=arr.slice(-15),w=600,h=190;if(a.length<2)return'';
@@ -1155,6 +1160,7 @@ function chart(arr){
     <div class="chart-x"><span>${md(a[0].day)}</span><span>${md(a[Math.floor(a.length/2)].day)}</span><span>오늘</span></div>`;
 }
 function renderCo(){
+  if(openCo==='kofr'){renderKofrDetail();return}
   const c=CO.find(x=>x.id===openCo),arr=history()[c.id],p=arr[arr.length-1],today=dayKey(Date.now()),tomorrow=shiftKey(today,1);
   const h=S.stock.hold[c.id]||{q:0,avg:0},e=eventFor(c,today),maxBuy=Math.floor(S.stock.cash/p.price);
   const bought=(S.stock.hints[tomorrow]||{})[c.id]||[],pl=h.q?(p.price-h.avg)*h.q:0;
@@ -1187,12 +1193,44 @@ function renderCo(){
   $('doBuy').onclick=()=>trade(1);$('doSell').onclick=()=>trade(-1);
   $('detail').querySelectorAll('[data-tier]').forEach(b=>b.onclick=()=>buyHint(Number(b.dataset.tier)));
 }
+function renderKofrDetail(){
+  const price=kofrUnitPrice(),prev=price/(1+KOFR_DAILY),held=S.stock.kofr||0;
+  const today=dayKey(Date.now());
+  const historyPoints=Array.from({length:15},(_,i)=>({day:shiftKey(today,i-14),price:kofrUnitPrice(shiftKey(today,i-14))}));
+  $('detail').innerHTML=`
+    <div class="d-head"><span class="logo">K</span><div><strong>KOFR형 안전자산</strong><small>게임 전용 · 연 10% 복리 · 가격 하락 없음</small></div>
+      <div class="d-right"><div class="d-price num">${kofrPriceText(price)}</div><div class="d-pct num up">오늘 ${pctTxt(KOFR_DAILY*100)}</div></div></div>
+    ${chart(historyPoints)}
+    <div class="d-news"><span>상품 정보</span>2026년 1월 1일 1좌당 10,000원에서 시작해 매일 복리로 상승하는 가상 안전자산이에요. 실제 KOFR 금리나 금융상품 가격과는 달라요.</div>
+    <div class="d-grid">
+      <div class="box"><h4>가격과 보유 현황</h4>
+        <div class="kv"><span>최초 기준가격 (1좌)</span><b>${kofrPriceText(KOFR_BASE)}</b></div>
+        <div class="kv"><span>현재 가격 (1좌)</span><b>${kofrPriceText(price)}</b></div>
+        <div class="kv"><span>하루 수익률</span><b>+${(KOFR_DAILY*100).toFixed(4)}%</b></div>
+        <div class="kv"><span>보유금액</span><b>${won(held)}</b></div>
+        <div class="kv"><span>환산 보유좌수</span><b>${(held/price).toLocaleString('ko-KR',{maximumFractionDigits:6})}좌</b></div>
+        <div class="kv"><span>예상 하루 이자</span><b class="up">+${won(held*KOFR_DAILY)}</b></div>
+        <p class="note">기존에 매수한 KOFR 보유금액과 누적 이자는 그대로 유지됩니다. 좌수는 현재 금액을 1좌당 가격으로 환산한 참고값이에요.</p>
+      </div>
+      <div class="box"><h4>거래 <small>현금 ${won(S.stock.cash)}</small></h4>
+        <p class="note" style="margin:0 0 12px">거래할 금액(원)을 입력하세요. 매일 오전 4시에 복리 이자가 반영됩니다.</p>
+        <div class="qty"><input id="kofrAmount" class="num" inputmode="numeric" type="number" min="1" step="1" placeholder="금액 (원)" aria-label="KOFR 거래 금액"></div>
+        <div class="bk"><button class="ghost" id="kofrMaxBuy">현금 전액</button><button class="ghost" id="kofrMaxSell">보유 전액</button></div>
+        <div class="trade" style="margin-top:12px"><button class="buy" id="kofrBuy">매수</button><button class="sell" id="kofrSell">매도</button></div>
+        <p class="note">주식용 뉴스·단서 구매 없이 이용할 수 있어요.</p>
+      </div>
+    </div>`;
+  $('kofrBuy').onclick=()=>kofrTrade(1);
+  $('kofrSell').onclick=()=>kofrTrade(-1);
+  $('kofrMaxBuy').onclick=()=>$('kofrAmount').value=Math.floor(S.stock.cash);
+  $('kofrMaxSell').onclick=()=>$('kofrAmount').value=Math.floor(S.stock.kofr||0);
+}
 function updateTrade(){
   const p=priceOf(openCo).price,h=S.stock.hold[openCo]||{q:0};
   $('qCost').textContent=`${qty}주 × ${won(p)} = ${won(qty*p)}`;
   $('doBuy').disabled=qty*p>S.stock.cash;$('doSell').disabled=qty>h.q;
 }
-function updateTierButtons(){const info=infoSec(),cur=(S.stock.hints[shiftKey(dayKey(Date.now()),1)]||{})[openCo]||[];$('detail').querySelectorAll('[data-tier]').forEach(b=>{if(!b.classList.contains('owned'))b.disabled=info<tierCost(Number(b.dataset.tier),cur)})}
+function updateTierButtons(){if(openCo==='kofr')return;const info=infoSec(),cur=(S.stock.hints[shiftKey(dayKey(Date.now()),1)]||{})[openCo]||[];$('detail').querySelectorAll('[data-tier]').forEach(b=>{if(!b.classList.contains('owned'))b.disabled=info<tierCost(Number(b.dataset.tier),cur)})}
 function trade(dir){
   const p=priceOf(openCo).price,h=S.stock.hold[openCo]||{q:0,avg:0},c=CO.find(x=>x.id===openCo);
   if(dir>0){if(qty*p>S.stock.cash)return toast('현금이 부족해요');h.avg=(h.avg*h.q+p*qty)/(h.q+qty);h.q+=qty;S.stock.cash-=qty*p;toast(`${c.n} ${qty}주를 샀어요`)}
@@ -1213,10 +1251,6 @@ function kofrTrade(dir){
   input.value='';save();renderStock();renderCo();
   toast(`KOFR ${dir>0?'매수':'매도'} ${won(amount)}`);
 }
-$('kofrBuy').onclick=()=>kofrTrade(1);
-$('kofrSell').onclick=()=>kofrTrade(-1);
-$('kofrMaxBuy').onclick=()=>$('kofrAmount').value=Math.floor(S.stock.cash);
-$('kofrMaxSell').onclick=()=>$('kofrAmount').value=Math.floor(S.stock.kofr||0);
 /* 단서는 단계를 올리는 방식: 이미 산 단계의 시간만큼은 다시 내지 않음 (1시간 → +1시간 → +1시간) */
 const ownedTier=list=>list&&list.length?Math.max(...list):0;
 const tierCost=(t,list)=>{const o=ownedTier(list);return t<=o?0:(TIERS[t-1].h-(o?TIERS[o-1].h:0))*3600};
