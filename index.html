@@ -567,8 +567,7 @@ kbd.k{display:inline-block;min-width:22px;padding:0 6px;border-radius:6px;border
             <div><small>주식</small><b class="num" id="aStock"></b></div>
             <div><small>다음 변동 (오전 4시)</small><b class="num" id="aClock"></b></div>
             <div><small>정보 시간</small><b class="num" id="aInfo"></b></div>
-            <div><small>KOFR형 안전자산</small><b class="num" id="aKofr"></b></div>
-            <div><small>공부 보상 (하루 6시간 한도)</small><b class="num" id="aReward"></b></div>
+            <div style="grid-column:1 / -1"><small>공부 보상 (하루 6시간 한도)</small><b class="num" id="aReward"></b></div>
           </div>
         </div>
         <div class="card cmp">
@@ -1121,7 +1120,7 @@ function renderStock(){
   $('aRate').className='rt num '+sign(rate);
   $('aRate').textContent=`${pf.total-SEED>=0?'+':'−'}${Math.abs(Math.round(pf.total-SEED)).toLocaleString('ko-KR')}원 (${pctTxt(rate)})`;
   $('aCash').textContent=won(S.stock.cash);$('aStock').textContent=won(pf.stock);
-  $('aKofr').textContent=won(pf.kofr);$('aReward').textContent=`시간당 ${won(STUDY_PAY)} · 최대 ${won(STUDY_PAY*STUDY_CAP_HOURS)}`;
+  $('aReward').textContent=`시간당 ${won(STUDY_PAY)} · 최대 ${won(STUDY_PAY*STUDY_CAP_HOURS)}`;
   $('aClock').textContent=hms((dayStart(today)+24*H-Date.now())/1000);
   $('newsDate').textContent=`${md(today)} 오전 4시`;
   const mk=market(today),items=[];let calm=0;
